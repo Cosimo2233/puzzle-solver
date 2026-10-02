@@ -1,0 +1,28 @@
+[project]
+name = "puzzle-solver"
+version = "0.1.0"
+description = "独立几何拼图求解与移动方案库"
+requires-python = ">=3.10,<3.13"
+readme = "README.md"
+dependencies = ["numpy>=2.0,<3", "scipy>=1.13,<2", "shapely>=2,<3", "typer>=0.12,<1"]
+
+[project.optional-dependencies]
+diagnostics = ["matplotlib>=3.8,<4", "pillow>=10,<13", "psutil>=5.9,<8"]
+
+[project.scripts]
+puzzle-solver = "puzzle_solver.commands.app:app"
+
+[tool.poetry]
+packages = [{include = "puzzle_solver", from = "src"}]
+
+[dependency-groups]
+dev = ["pytest>=9.1,<10"]
+
+[[tool.poetry.source]]
+name = "tuna"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core>=2.0,<3"]
+build-backend = "poetry.core.masonry.api"
