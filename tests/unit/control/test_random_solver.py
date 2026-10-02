@@ -505,8 +505,8 @@ class RandomCompetitionSolverTest(unittest.TestCase):
         self.assertTrue(pool.consider(accepted_candidate))
         self.assertIs(pool.items()[0], accepted_candidate)
 
-    def test_random_quality_failure_does_not_block_machine_execution(self) -> None:
-        """随机几何质量不达标时应给风险标记，但不能截断机械有效动作。"""
+    def test_random_quality_failure_blocks_execution_even_if_machine_reachable(self) -> None:
+        """即使机械路径可达，几何不完整或置信度不足仍必须阻断执行。"""
 
         profile = ObservationUncertaintyProfile(
             2.0, 0.5, None, None, None, "unit_test", "medium", False
@@ -577,10 +577,11 @@ class RandomCompetitionSolverTest(unittest.TestCase):
         gate = evaluate_random_execution_gate(**gate_arguments)
 
         self.assertTrue(gate.machine_executable)
-        self.assertTrue(gate.executable)
-        self.assertTrue(gate.forced_output)
+        self.assertFalse(gate.executable)
+        self.assertFalse(gate.forced_output)
         self.assertFalse(gate.competition_gate_passed)
-        self.assertEqual(gate.reasons, [])
+        self.assertIn("reconstructed_topology_disconnected", gate.reasons)
+        self.assertIn("low_confidence", gate.reasons)
         self.assertIn(
             "reconstructed_topology_disconnected",
             gate.solver_block_reasons,

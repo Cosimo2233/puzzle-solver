@@ -84,8 +84,8 @@ def plan_sheet_moves(
 ) -> MovePlan:
     """同步计算纸片拼成矩形所需的完整移动方案。
 
-    本函数只接收强类型内存对象并返回强类型方案，不读取或写入文件，
-    也不访问视觉、相机或硬件资源。
+    调用方只传入强类型内存对象并接收强类型方案。内部求解器使用
+    自动清理的临时文件，不访问视觉、相机或硬件资源。
     """
 
     if isinstance(pieces, (str, bytes)) or not isinstance(pieces, Sequence):
