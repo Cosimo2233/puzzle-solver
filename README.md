@@ -23,3 +23,17 @@ CLI：`poetry run puzzle-solver --input baselines/fixed4.json --output build/fix
 
 来源：EvelynIV/ec_26_e 的 `16094397734adcd477a57cba47a33db237872750`，加本地 7020 迁移修改；原始 Git 历史及未提交修改归档在 FPGA 主工程的 `archive/`。不额外授予上游代码许可。
 主工程开发通过本地 Poetry 依赖接入，部署使用固定版本 wheel；验收以实际记录为准。原测试中固定外框尺寸及最小间隙的两个断言与历史模板不一致，保留原断言并单独记录。
+
+## 算法测试与结果图
+
+[2026-10-02 图形报告](reports/2026-10-02/index.html) · [结果总览](reports/2026-10-02/overview.png) · [测试结论](reports/2026-10-02/README.md)。
+
+复现命令（输出目录需是未使用的新目录）：
+
+```powershell
+poetry install -E diagnostics
+poetry run python -m puzzle_solver.commands.validate --output build/algorithm-validation-new --timeout 45
+poetry run pytest tests/test_validation_metrics.py -q
+```
+
+测试四个历史基线及二十个固定种子新样例，包括固定四片、随机二至四片，以及模板、递归切分、线排列、混合和对抗生成模式。每例保存输入、方案、指标、日志和图像；生成真值不传入求解器。输出方案通过检查与紧密拼成矩形分别统计，不能互相替代。

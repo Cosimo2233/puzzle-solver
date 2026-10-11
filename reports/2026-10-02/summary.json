@@ -1,0 +1,3291 @@
+{
+  "groups": {
+    "fixed4": {
+      "total": 6,
+      "passed": 6,
+      "tight_rectangle": 0,
+      "mean_solve_ms": 661.9280333373657
+    },
+    "random2": {
+      "total": 6,
+      "passed": 6,
+      "tight_rectangle": 0,
+      "mean_solve_ms": 89.32616666667552
+    },
+    "random3": {
+      "total": 6,
+      "passed": 6,
+      "tight_rectangle": 0,
+      "mean_solve_ms": 154.07493333138214
+    },
+    "random4": {
+      "total": 6,
+      "passed": 6,
+      "tight_rectangle": 0,
+      "mean_solve_ms": 1354.6536333305994
+    }
+  },
+  "cases": [
+    {
+      "id": "fixed4-baseline",
+      "mode": "fixed",
+      "count": 4,
+      "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\fixed4.json",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 0.6005999894114211,
+      "solve_ms": 655.3851000062423,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 8.987733679556355e-14,
+        "max_area_error_mm2": 4.547473508864641e-13,
+        "minimum_piece_distance_mm": 4.569651694999266,
+        "rectangle_coverage": 0.7309585828631571,
+        "rectangle_empty_area_mm2": 2208.3994095781227,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.0,
+            180.54999999999993
+          ],
+          [
+            50.00000000000013,
+            253.94999999999996
+          ],
+          [
+            161.8310546264049,
+            253.94999999999996
+          ],
+          [
+            161.8310546264049,
+            180.54999999999987
+          ],
+          [
+            50.0,
+            180.54999999999993
+          ]
+        ]
+      },
+      "input_sha256": "fb26f6ebc80636da530325464e6c04ee9655816883f6ec7449f18f919f911186"
+    },
+    {
+      "id": "fixed4-seed260240",
+      "mode": "fixed",
+      "count": 4,
+      "seed": 260240,
+      "generator": "fixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 4.818700006580912,
+      "solve_ms": 727.3343999986537,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 0.0,
+        "max_area_error_mm2": 1.1368683772161603e-12,
+        "minimum_piece_distance_mm": 4.569651694999345,
+        "rectangle_coverage": 0.7309585828631582,
+        "rectangle_empty_area_mm2": 2208.399409578111,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.00000000000013,
+            253.94999999999996
+          ],
+          [
+            161.83105462640492,
+            253.94999999999996
+          ],
+          [
+            161.83105462640492,
+            180.54999999999995
+          ],
+          [
+            50.00000000000013,
+            180.54999999999995
+          ],
+          [
+            50.00000000000013,
+            253.94999999999996
+          ]
+        ]
+      },
+      "input_sha256": "aab28d9f3ac2274414ff2799bbc3750d2899326fa50f42f60b1c1cf7e5dee30d"
+    },
+    {
+      "id": "fixed4-seed260241",
+      "mode": "fixed",
+      "count": 4,
+      "seed": 260241,
+      "generator": "fixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 5.621499993139878,
+      "solve_ms": 737.1454000094673,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 6.355287432313019e-14,
+        "max_area_error_mm2": 6.821210263296962e-13,
+        "minimum_piece_distance_mm": 4.569651694999311,
+        "rectangle_coverage": 0.730958582863158,
+        "rectangle_empty_area_mm2": 2208.3994095781127,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.00000000000001,
+            253.95000000000007
+          ],
+          [
+            161.83105462640472,
+            253.95000000000007
+          ],
+          [
+            161.83105462640472,
+            180.55
+          ],
+          [
+            50.00000000000001,
+            180.55
+          ],
+          [
+            50.00000000000001,
+            253.95000000000007
+          ]
+        ]
+      },
+      "input_sha256": "64f9f984b3dcf143e89578fc05364710c6c01a954aa2f840b5dbafe51fc1e6e9"
+    },
+    {
+      "id": "fixed4-seed260242",
+      "mode": "fixed",
+      "count": 4,
+      "seed": 260242,
+      "generator": "fixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 3.4551999997347593,
+      "solve_ms": 652.0657000073697,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 6.703246762680666e-14,
+        "max_area_error_mm2": 6.821210263296962e-13,
+        "minimum_piece_distance_mm": 4.5696516949993295,
+        "rectangle_coverage": 0.7309585828631585,
+        "rectangle_empty_area_mm2": 2208.3994095781063,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.0,
+            180.54999999999998
+          ],
+          [
+            50.000000000000064,
+            253.94999999999996
+          ],
+          [
+            161.83105462640475,
+            253.94999999999996
+          ],
+          [
+            161.83105462640475,
+            180.54999999999995
+          ],
+          [
+            50.0,
+            180.54999999999998
+          ]
+        ]
+      },
+      "input_sha256": "1dc093216048f2d1c9baaad0708fc88efc4b4612eb016c1d8dea44bb645ca20f"
+    },
+    {
+      "id": "fixed4-seed260243",
+      "mode": "fixed",
+      "count": 4,
+      "seed": 260243,
+      "generator": "fixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 4.161300006671809,
+      "solve_ms": 758.9712000044528,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 9.947598300641403e-14,
+        "max_area_error_mm2": 1.3642420526593924e-12,
+        "minimum_piece_distance_mm": 4.569651694999292,
+        "rectangle_coverage": 0.7309585828631588,
+        "rectangle_empty_area_mm2": 2208.3994095781045,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.000000000000014,
+            180.55
+          ],
+          [
+            50.000000000000014,
+            253.95
+          ],
+          [
+            161.83105462640478,
+            253.95
+          ],
+          [
+            161.83105462640478,
+            180.55
+          ],
+          [
+            50.000000000000014,
+            180.55
+          ]
+        ]
+      },
+      "input_sha256": "022a0c2345f940de4d712c12b072abe32159c0cdf91651e3207e1988194514ce"
+    },
+    {
+      "id": "fixed4-seed260244",
+      "mode": "fixed",
+      "count": 4,
+      "seed": 260244,
+      "generator": "fixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 2.746600002865307,
+      "solve_ms": 440.6663999980083,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 3.1776437161565096e-14,
+        "max_area_error_mm2": 5.684341886080801e-13,
+        "minimum_piece_distance_mm": 4.569651694999475,
+        "rectangle_coverage": 0.730958582863158,
+        "rectangle_empty_area_mm2": 2208.3994095781127,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            161.8310546264048,
+            180.55000000000007
+          ],
+          [
+            49.999999999999886,
+            180.55000000000007
+          ],
+          [
+            49.999999999999886,
+            253.95
+          ],
+          [
+            161.8310546264048,
+            253.95
+          ],
+          [
+            161.8310546264048,
+            180.55000000000007
+          ]
+        ]
+      },
+      "input_sha256": "f4c38432effe0df084fb60406f78894cd90c764a91dc3ed607bdd4fbae6e68d3"
+    },
+    {
+      "id": "random2-baseline",
+      "mode": "random",
+      "count": 2,
+      "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\random2.json",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 0.4952000017510727,
+      "solve_ms": 90.4718999954639,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 8.526512829121202e-14,
+        "max_area_error_mm2": 9.094947017729282e-13,
+        "minimum_piece_distance_mm": 4.974538035006443,
+        "rectangle_coverage": 0.9336145802038543,
+        "rectangle_empty_area_mm2": 497.7406613246685,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            156.34417070449607,
+            183.52900782920818
+          ],
+          [
+            50.65582929550386,
+            183.52900782920824
+          ],
+          [
+            50.65582929550386,
+            254.47099217079185
+          ],
+          [
+            156.34417070449598,
+            254.47099217079185
+          ],
+          [
+            156.34417070449607,
+            183.52900782920818
+          ]
+        ]
+      },
+      "input_sha256": "f7b8bab053ae8ee944b28b641f87881dac6d60672c4fbea9438cf0ca8011cbbb"
+    },
+    {
+      "id": "random2-seed260220",
+      "mode": "random",
+      "count": 2,
+      "seed": 260220,
+      "generator": "template",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n2:1",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 1,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 70.0
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 90.0,
+        "piece_aspect_ratios": [
+          1.4225403526358478,
+          1.37816281569945
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          90.0
+        ],
+        "common_edge_length_mm": [
+          70.0
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n2:1",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.492,
+            0.508
+          ],
+          "common_length_fractions": [
+            0.573
+          ],
+          "common_direction_bins_5deg": [
+            18
+          ]
+        },
+        "generator_mode": "template",
+        "template_topology": "guillotine"
+      },
+      "generation_ms": 3.3567000064067543,
+      "solve_ms": 90.68239999760408,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.1368683772161603e-13,
+        "max_area_error_mm2": 2.7284841053187847e-12,
+        "minimum_piece_distance_mm": 5.0,
+        "rectangle_coverage": 0.9523809523809511,
+        "rectangle_empty_area_mm2": 350.00000000001,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.999999999999865,
+            254.0000000000001
+          ],
+          [
+            156.0,
+            254.0
+          ],
+          [
+            155.99999999999986,
+            184.00000000000003
+          ],
+          [
+            50.999999999999865,
+            184.00000000000003
+          ],
+          [
+            50.999999999999865,
+            254.0000000000001
+          ]
+        ]
+      },
+      "input_sha256": "6207ba7fbf414aaff6e4d12eb487f3517a68b651a8899b936c1a7418971299c1"
+    },
+    {
+      "id": "random2-seed260221",
+      "mode": "random",
+      "count": 2,
+      "seed": 260221,
+      "generator": "recursive",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n2:1",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 1,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 74.18932698329448
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          5,
+          3
+        ],
+        "minimum_interior_angle_deg": 27.656668060506824,
+        "piece_aspect_ratios": [
+          1.4285714285714286,
+          2.4322717991692056
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          152.34333193949317
+        ],
+        "common_edge_length_mm": [
+          74.18932698329448
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n2:1",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            3,
+            5
+          ],
+          "area_fractions": [
+            0.162,
+            0.838
+          ],
+          "common_length_fractions": [
+            0.608
+          ],
+          "common_direction_bins_5deg": [
+            30
+          ]
+        },
+        "generator_mode": "recursive",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 9.870800000499003,
+      "solve_ms": 86.50140000099782,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.7053025658242404e-13,
+        "max_area_error_mm2": 0.0,
+        "minimum_piece_distance_mm": 5.000000000000121,
+        "rectangle_coverage": 0.9191645677352028,
+        "rectangle_empty_area_mm2": 615.611225362848,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            52.33956924270161,
+            181.78563768603323
+          ],
+          [
+            52.33956924270161,
+            256.21436231396666
+          ],
+          [
+            154.66043075729857,
+            256.21436231396666
+          ],
+          [
+            154.66043075729857,
+            181.78563768603323
+          ],
+          [
+            52.33956924270161,
+            181.78563768603323
+          ]
+        ]
+      },
+      "input_sha256": "8f5fda3ded22b3579cb5440b32cb7542b42940d2996081ca039e8242b9869973"
+    },
+    {
+      "id": "random2-seed260222",
+      "mode": "random",
+      "count": 2,
+      "seed": 260222,
+      "generator": "arrangement",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n2:1",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 1,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 65.15665646750169
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          5
+        ],
+        "minimum_interior_angle_deg": 26.555673978566542,
+        "piece_aspect_ratios": [
+          2.5006140208959344,
+          1.4285714285714286
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          153.44432602143345
+        ],
+        "common_edge_length_mm": [
+          65.15665646750169
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n2:1",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            3,
+            5
+          ],
+          "area_fractions": [
+            0.121,
+            0.879
+          ],
+          "common_length_fractions": [
+            0.534
+          ],
+          "common_direction_bins_5deg": [
+            31
+          ]
+        },
+        "generator_mode": "arrangement",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 14.867199992295355,
+      "solve_ms": 83.20570000796579,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 5.684341886080802e-14,
+        "max_area_error_mm2": 2.7284841053187847e-12,
+        "minimum_piece_distance_mm": 4.999999999999984,
+        "rectangle_coverage": 0.9193927343028026,
+        "rectangle_empty_area_mm2": 613.7212518959777,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            154.61766801220904,
+            181.76374907166468
+          ],
+          [
+            52.38233198778989,
+            181.76374907166442
+          ],
+          [
+            52.382331987790934,
+            256.2362509283363
+          ],
+          [
+            154.61766801221012,
+            256.2362509283356
+          ],
+          [
+            154.61766801220904,
+            181.76374907166468
+          ]
+        ]
+      },
+      "input_sha256": "0ea9afb967bcd6cc00ef9a643dee4df7c9c52d05a5995d840cd3f28feef27ccd"
+    },
+    {
+      "id": "random2-seed260223",
+      "mode": "random",
+      "count": 2,
+      "seed": 260223,
+      "generator": "mixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n2:1",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 1,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 67.52296387277823
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          5
+        ],
+        "minimum_interior_angle_deg": 38.76498859131494,
+        "piece_aspect_ratios": [
+          1.2453066724760817,
+          1.4285714285714286
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          141.23501140868507
+        ],
+        "common_edge_length_mm": [
+          67.52296387277823
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n2:1",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            3,
+            5
+          ],
+          "area_fractions": [
+            0.159,
+            0.841
+          ],
+          "common_length_fractions": [
+            0.553
+          ],
+          "common_direction_bins_5deg": [
+            28
+          ]
+        },
+        "generator_mode": "recursive",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 8.681799998157658,
+      "solve_ms": 98.31329999724403,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 5.684341886080802e-14,
+        "max_area_error_mm2": 2.7284841053187847e-12,
+        "minimum_piece_distance_mm": 4.999999999999954,
+        "rectangle_coverage": 0.9184893109657896,
+        "rectangle_empty_area_mm2": 621.210085329697,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            51.93468132811391,
+            255.94930178665064
+          ],
+          [
+            155.06531867188616,
+            255.9493017866522
+          ],
+          [
+            155.06531867188878,
+            182.0506982133473
+          ],
+          [
+            51.934681328114436,
+            182.0506982133473
+          ],
+          [
+            51.93468132811391,
+            255.94930178665064
+          ]
+        ]
+      },
+      "input_sha256": "ab056face5566675370699cbe820611e25818b6e76d77fda759fc02427577cdc"
+    },
+    {
+      "id": "random2-seed260224",
+      "mode": "random",
+      "count": 2,
+      "seed": 260224,
+      "generator": "adversarial",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n2:1",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 1,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 79.90922430021135
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 61.16283282327344,
+        "piece_aspect_ratios": [
+          1.00734700510669,
+          1.0137211766226844
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          61.162832823273455
+        ],
+        "common_edge_length_mm": [
+          79.90922430021135
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n2:1",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.498,
+            0.502
+          ],
+          "common_length_fractions": [
+            0.655
+          ],
+          "common_direction_bins_5deg": [
+            12
+          ]
+        },
+        "generator_mode": "adversarial",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 57.99560000014026,
+      "solve_ms": 86.78230000077747,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.464821375527116e-13,
+        "max_area_error_mm2": 9.094947017729282e-13,
+        "minimum_piece_distance_mm": 5.0000000000000755,
+        "rectangle_coverage": 0.9261315262468683,
+        "rectangle_empty_area_mm2": 558.3216871661589,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            155.68998496772474,
+            182.79419494065587
+          ],
+          [
+            51.31001503227566,
+            182.79419494065561
+          ],
+          [
+            51.31001503227566,
+            255.20580505934404
+          ],
+          [
+            155.68998496772505,
+            255.20580505934404
+          ],
+          [
+            155.68998496772474,
+            182.79419494065587
+          ]
+        ]
+      },
+      "input_sha256": "89d1129f1b4b0eb6cb70ae324d7d947209c1e0aececffa18ffa4ede04651cff4"
+    },
+    {
+      "id": "random3-baseline",
+      "mode": "random",
+      "count": 3,
+      "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\random3.json",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 0.6661999941570684,
+      "solve_ms": 201.95039999089204,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 5.859285502108464e-14,
+        "max_area_error_mm2": 2.2737367544323206e-12,
+        "minimum_piece_distance_mm": 4.978394975108833,
+        "rectangle_coverage": 0.8946355272989962,
+        "rectangle_empty_area_mm2": 824.4154031461012,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.59728000056972,
+            256.4848300862602
+          ],
+          [
+            154.95286040229908,
+            256.4848300862605
+          ],
+          [
+            154.95286040229956,
+            181.50642094872256
+          ],
+          [
+            50.59728000056972,
+            181.50642094872256
+          ],
+          [
+            50.59728000056972,
+            256.4848300862602
+          ]
+        ]
+      },
+      "input_sha256": "faa5c893bdcddcaca99807737523c848c4e05ee97a72700c6a200b282601a98a"
+    },
+    {
+      "id": "random3-seed260230",
+      "mode": "random",
+      "count": 3,
+      "seed": 260230,
+      "generator": "template",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n3:011",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 0,
+        "interior_node_degrees": [],
+        "internal_node_positions_mm": [],
+        "common_edge_count": 2,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 70.0
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 70.0
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 90.0,
+        "piece_aspect_ratios": [
+          3.37055557711979,
+          1.8276441721918526,
+          1.710185243527247
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 1,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          90.0,
+          90.0
+        ],
+        "common_edge_length_mm": [
+          70.0,
+          70.0
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n3:011",
+          "junction_degrees": [],
+          "piece_edge_counts": [
+            4,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.208,
+            0.383,
+            0.409
+          ],
+          "common_length_fractions": [
+            0.573,
+            0.573
+          ],
+          "common_direction_bins_5deg": [
+            18,
+            18
+          ]
+        },
+        "generator_mode": "template",
+        "template_topology": "guillotine"
+      },
+      "generation_ms": 4.128000000491738,
+      "solve_ms": 124.86499999067746,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 5.684341886080802e-14,
+        "max_area_error_mm2": 9.094947017729282e-13,
+        "minimum_piece_distance_mm": 5.000000000000014,
+        "rectangle_coverage": 0.9090909090908944,
+        "rectangle_empty_area_mm2": 700.0000000001246,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            158.49999999999991,
+            254.0000000000003
+          ],
+          [
+            158.50000000000128,
+            183.99999999999946
+          ],
+          [
+            48.49999999999976,
+            183.99999999999946
+          ],
+          [
+            48.49999999999926,
+            253.9999999999995
+          ],
+          [
+            158.49999999999991,
+            254.0000000000003
+          ]
+        ]
+      },
+      "input_sha256": "2a00862269708b3e11fb1c5178bc648bfe2637b93eef3a26a10f32aeb0344fcb"
+    },
+    {
+      "id": "random3-seed260231",
+      "mode": "random",
+      "count": 3,
+      "seed": 260231,
+      "generator": "recursive",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n3:111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            82.77923765846423,
+            20.837538713834505
+          ]
+        ],
+        "common_edge_count": 3,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 34.28174292856987
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 21.686823370385575
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 61.17792250150968
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          5,
+          4
+        ],
+        "minimum_interior_angle_deg": 37.4329035160528,
+        "piece_aspect_ratios": [
+          1.3063901736227053,
+          1.1825605379780604,
+          1.4194838769078004
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          37.43290351605279,
+          37.43290351605279,
+          126.5249191367439
+        ],
+        "common_edge_length_mm": [
+          34.28174292856987,
+          21.686823370385575,
+          61.17792250150968
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n3:111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            3,
+            4,
+            5
+          ],
+          "area_fractions": [
+            0.108,
+            0.233,
+            0.659
+          ],
+          "common_length_fractions": [
+            0.178,
+            0.281,
+            0.501
+          ],
+          "common_direction_bins_5deg": [
+            7,
+            7,
+            25
+          ]
+        },
+        "generator_mode": "recursive",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 11.813799996161833,
+      "solve_ms": 178.48550000053365,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.1368683772161603e-13,
+        "max_area_error_mm2": 1.8189894035458565e-12,
+        "minimum_piece_distance_mm": 4.8936519317614104,
+        "rectangle_coverage": 0.8835349584527835,
+        "rectangle_empty_area_mm2": 922.7199026263352,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            156.31867074912856,
+            181.090394534
+          ],
+          [
+            51.76674640770044,
+            181.090394534
+          ],
+          [
+            51.76674640770044,
+            256.86824322049233
+          ],
+          [
+            156.31867074912856,
+            256.86824322049233
+          ],
+          [
+            156.31867074912856,
+            181.090394534
+          ]
+        ]
+      },
+      "input_sha256": "08db4c6f4da8044941956be8107d060573153118839e6ff33ace5e2cb6091e9d"
+    },
+    {
+      "id": "random3-seed260232",
+      "mode": "random",
+      "count": 3,
+      "seed": 260232,
+      "generator": "arrangement",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n3:111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            65.74119878228541,
+            24.715927895601656
+          ]
+        ],
+        "common_edge_count": 3,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 42.06798536248061
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 25.604643118427152
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 46.9123599194744
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          5,
+          4
+        ],
+        "minimum_interior_angle_deg": 35.98146095492481,
+        "piece_aspect_ratios": [
+          1.5354790757005483,
+          1.0647813136450162,
+          1.505012458388721
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          35.981460954924835,
+          105.1399281087372,
+          105.13992810873721
+        ],
+        "common_edge_length_mm": [
+          42.06798536248061,
+          25.604643118427152,
+          46.9123599194744
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n3:111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            3,
+            4,
+            5
+          ],
+          "area_fractions": [
+            0.072,
+            0.37,
+            0.558
+          ],
+          "common_length_fractions": [
+            0.21,
+            0.345,
+            0.384
+          ],
+          "common_direction_bins_5deg": [
+            7,
+            21,
+            21
+          ]
+        },
+        "generator_mode": "arrangement",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 8.293000006233342,
+      "solve_ms": 148.66070001153275,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.1368683772161603e-13,
+        "max_area_error_mm2": 9.663381206337363e-13,
+        "minimum_piece_distance_mm": 4.777286804550999,
+        "rectangle_coverage": 0.8876050281260355,
+        "rectangle_empty_area_mm2": 886.3906559641919,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.380686097503784,
+            182.33189120581696
+          ],
+          [
+            50.380686097503784,
+            257.01959473166414
+          ],
+          [
+            155.9722397758807,
+            257.01959473166414
+          ],
+          [
+            155.9722397758807,
+            182.33189120581696
+          ],
+          [
+            50.380686097503784,
+            182.33189120581696
+          ]
+        ]
+      },
+      "input_sha256": "4fbe60681b0551366f7e4d342518640dc6456c561a7e68ec583f4ddda20d0657"
+    },
+    {
+      "id": "random3-seed260233",
+      "mode": "random",
+      "count": 3,
+      "seed": 260233,
+      "generator": "mixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n3:111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            71.1583346314934,
+            19.705362289394966
+          ]
+        ],
+        "common_edge_count": 3,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 32.156246325544934
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 36.497456087715214
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 72.14980255895442
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          4,
+          5
+        ],
+        "minimum_interior_angle_deg": 37.792270511947386,
+        "piece_aspect_ratios": [
+          2.0650148728145035,
+          2.313180766742047,
+          1.9882835338311662
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          37.79227051194737,
+          37.79227051194739,
+          170.49049345515604
+        ],
+        "common_edge_length_mm": [
+          32.156246325544934,
+          36.497456087715214,
+          72.14980255895442
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n3:111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            3,
+            4,
+            5
+          ],
+          "area_fractions": [
+            0.163,
+            0.225,
+            0.612
+          ],
+          "common_length_fractions": [
+            0.263,
+            0.299,
+            0.591
+          ],
+          "common_direction_bins_5deg": [
+            8,
+            8,
+            34
+          ]
+        },
+        "generator_mode": "recursive",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 8.507899998221546,
+      "solve_ms": 139.99959999637213,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.7288250917028504e-13,
+        "max_area_error_mm2": 2.7284841053187847e-12,
+        "minimum_piece_distance_mm": 4.131294024786117,
+        "rectangle_coverage": 0.8815880005409226,
+        "rectangle_empty_area_mm2": 940.2169672284072,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            155.6019120254237,
+            257.39602386733463
+          ],
+          [
+            155.6019120254237,
+            181.45540130641746
+          ],
+          [
+            51.043683511310476,
+            181.45540130641746
+          ],
+          [
+            51.043683511310476,
+            257.39602386733463
+          ],
+          [
+            155.6019120254237,
+            257.39602386733463
+          ]
+        ]
+      },
+      "input_sha256": "94acb6765d2e5545ba7b27a3432994e86edc038591f801705539a4d9315fadb2"
+    },
+    {
+      "id": "random3-seed260234",
+      "mode": "random",
+      "count": 3,
+      "seed": 260234,
+      "generator": "adversarial",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n3:111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            43.523478923316894,
+            44.30136822098744
+          ]
+        ],
+        "common_edge_count": 3,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 43.547218783991205
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 56.50732616797858
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 27.025619339860434
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 70.07882065337586,
+        "piece_aspect_ratios": [
+          2.166050652917567,
+          1.9121195217383575,
+          2.197647001690032
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          1.8919786582285543,
+          1.8919786582285532,
+          71.97079931160441
+        ],
+        "common_edge_length_mm": [
+          43.547218783991205,
+          56.50732616797858,
+          27.025619339860434
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n3:111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            4,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.18,
+            0.184,
+            0.636
+          ],
+          "common_length_fractions": [
+            0.221,
+            0.357,
+            0.463
+          ],
+          "common_direction_bins_5deg": [
+            0,
+            0,
+            14
+          ]
+        },
+        "generator_mode": "adversarial",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 178.2853999902727,
+      "solve_ms": 130.48839999828488,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 6.355287432313019e-14,
+        "max_area_error_mm2": 1.5916157281026244e-12,
+        "minimum_piece_distance_mm": 4.622947483535295,
+        "rectangle_coverage": 0.88015341096402,
+        "rectangle_empty_area_mm2": 953.1589752438676,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            155.50938309520905,
+            182.08447118408085
+          ],
+          [
+            49.91344271022517,
+            182.08447118408085
+          ],
+          [
+            49.913442710224636,
+            257.40137206349016
+          ],
+          [
+            155.50938309520905,
+            257.40137206349016
+          ],
+          [
+            155.50938309520905,
+            182.08447118408085
+          ]
+        ]
+      },
+      "input_sha256": "2ef56ecfe4bdb3773ce547bd3202bdff09ef7a19cd0ea7f43299ec53d240c3a8"
+    },
+    {
+      "id": "random4-baseline",
+      "mode": "random",
+      "count": 4,
+      "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\random4.json",
+      "status": "passed",
+      "hardware_executed": false,
+      "generation_ms": 0.5275000003166497,
+      "solve_ms": 640.9426000027452,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 8.987733679556355e-14,
+        "max_area_error_mm2": 9.094947017729282e-13,
+        "minimum_piece_distance_mm": 4.977345053491099,
+        "rectangle_coverage": 0.8758274587785788,
+        "rectangle_empty_area_mm2": 992.4418101279189,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.65001353877303,
+            181.1928518306365
+          ],
+          [
+            50.65001353877303,
+            256.79246644923194
+          ],
+          [
+            156.37068222802844,
+            256.79246644923194
+          ],
+          [
+            156.37068222802844,
+            181.1928518306365
+          ],
+          [
+            50.65001353877303,
+            181.1928518306365
+          ]
+        ]
+      },
+      "input_sha256": "464a694ac3f41aecac7bb21d977ba860766054811ccdc13234100ee538fa0a6a"
+    },
+    {
+      "id": "random4-seed260240",
+      "mode": "random",
+      "count": 4,
+      "seed": 260240,
+      "generator": "template",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              3
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n4:011110",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 2,
+        "point_contact_locations": [
+          [
+            41.455122315123695,
+            34.297390143422525
+          ],
+          [
+            41.455122315123695,
+            34.297390143422525
+          ]
+        ],
+        "point_contacts": [
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "location_mm": [
+              41.455122315123695,
+              34.297390143422525
+            ]
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "location_mm": [
+              41.455122315123695,
+              34.297390143422525
+            ]
+          }
+        ],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          4
+        ],
+        "internal_node_positions_mm": [
+          [
+            41.455122315123695,
+            34.297390143422525
+          ]
+        ],
+        "common_edge_count": 4,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 58.57609072436606
+          },
+          {
+            "pieces": [
+              0,
+              3
+            ],
+            "length_mm": 38.68783293966405
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 36.01661812573649
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "length_mm": 42.65451246190664
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              3
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 60.568154830948195,
+        "piece_aspect_ratios": [
+          1.7069776283284899,
+          1.6826032822358608,
+          1.1611230238252859,
+          1.338613877134048
+        ],
+        "near_parallel_common_edge_pair_count": 0,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          178.1294696640696,
+          117.5613148331214,
+          97.57133989523402,
+          166.3805893508312
+        ],
+        "common_edge_length_mm": [
+          58.57609072436606,
+          38.68783293966405,
+          36.01661812573649,
+          42.65451246190664
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n4:011110",
+          "junction_degrees": [
+            4
+          ],
+          "piece_edge_counts": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.17,
+            0.235,
+            0.277,
+            0.319
+          ],
+          "common_length_fractions": [
+            0.295,
+            0.317,
+            0.349,
+            0.48
+          ],
+          "common_direction_bins_5deg": [
+            0,
+            20,
+            24,
+            33
+          ]
+        },
+        "generator_mode": "template",
+        "template_topology": "nonparallel"
+      },
+      "generation_ms": 4.652699994039722,
+      "solve_ms": 1581.114799992065,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 9.532931148469529e-14,
+        "max_area_error_mm2": 1.1368683772161603e-12,
+        "minimum_piece_distance_mm": 4.951433182407305,
+        "rectangle_coverage": 0.8682752399517905,
+        "rectangle_empty_area_mm2": 1061.959708062922,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            50.81975807233503,
+            257.2795839107621
+          ],
+          [
+            156.20111975366672,
+            257.2795839107621
+          ],
+          [
+            156.20111975366672,
+            180.77687432875922
+          ],
+          [
+            50.81975807233503,
+            180.77687432875922
+          ],
+          [
+            50.81975807233503,
+            257.2795839107621
+          ]
+        ]
+      },
+      "input_sha256": "b4e7d15ef7fd1d9674f49c58bc8d798ed08776043c74bc1c1bb25465b6fe3534"
+    },
+    {
+      "id": "random4-seed260241",
+      "mode": "random",
+      "count": 4,
+      "seed": 260241,
+      "generator": "recursive",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              3
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n4:001111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 1,
+        "point_contact_locations": [
+          [
+            36.59561484306197,
+            70.0
+          ]
+        ],
+        "point_contacts": [
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "location_mm": [
+              36.59561484306197,
+              70.0
+            ]
+          }
+        ],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            68.78463801333378,
+            34.46252705799694
+          ]
+        ],
+        "common_edge_count": 4,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 46.498006357066295
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 31.633053871079618
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 47.948359677468574
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "length_mm": 46.416256120437424
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          3,
+          4,
+          4,
+          3
+        ],
+        "minimum_interior_angle_deg": 37.96167664513135,
+        "piece_aspect_ratios": [
+          1.7496745677115535,
+          1.4285714285714288,
+          1.784155706862263,
+          2.0619168257021867
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 3,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          132.16955756834744,
+          9.321249406912399,
+          132.16955756834744,
+          37.96167664513135
+        ],
+        "common_edge_length_mm": [
+          46.498006357066295,
+          31.633053871079618,
+          47.948359677468574,
+          46.416256120437424
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n4:001111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            3,
+            3,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.075,
+            0.088,
+            0.229,
+            0.608
+          ],
+          "common_length_fractions": [
+            0.259,
+            0.38,
+            0.381,
+            0.393
+          ],
+          "common_direction_bins_5deg": [
+            2,
+            8,
+            26,
+            26
+          ]
+        },
+        "generator_mode": "recursive",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 200.2994999929797,
+      "solve_ms": 399.40979999664705,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.0247593068766006e-13,
+        "max_area_error_mm2": 1.8189894035458565e-12,
+        "minimum_piece_distance_mm": 4.5441575362142395,
+        "rectangle_coverage": 0.8555740876581025,
+        "rectangle_empty_area_mm2": 1181.640960119029,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            157.6242059629265,
+            181.28544054131584
+          ],
+          [
+            49.22540336332041,
+            181.28544054131584
+          ],
+          [
+            49.22540336332041,
+            256.7626668935261
+          ],
+          [
+            157.6242059629265,
+            256.7626668935261
+          ],
+          [
+            157.6242059629265,
+            181.28544054131584
+          ]
+        ]
+      },
+      "input_sha256": "437f71871ce3c9ec036a95b19dfea513e296789a668e7ded88c2f8da62cb477d"
+    },
+    {
+      "id": "random4-seed260242",
+      "mode": "random",
+      "count": 4,
+      "seed": 260242,
+      "generator": "arrangement",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n4:011110",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 2,
+        "point_contact_locations": [
+          [
+            36.32555341899184,
+            36.992623101401826
+          ],
+          [
+            36.32555341899184,
+            36.992623101401826
+          ]
+        ],
+        "point_contacts": [
+          {
+            "pieces": [
+              0,
+              3
+            ],
+            "location_mm": [
+              36.32555341899184,
+              36.992623101401826
+            ]
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "location_mm": [
+              36.32555341899184,
+              36.992623101401826
+            ]
+          }
+        ],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          4
+        ],
+        "internal_node_positions_mm": [
+          [
+            36.32555341899184,
+            36.992623101401826
+          ]
+        ],
+        "common_edge_count": 4,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 37.96583634361636
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 36.502206172381086
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "length_mm": 63.98409819675453
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "length_mm": 33.87574506487899
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 76.99898489531847,
+        "piece_aspect_ratios": [
+          1.21285434685707,
+          1.471224914800416,
+          1.0023372166580091,
+          2.1599843016692954
+        ],
+        "near_parallel_common_edge_pair_count": 2,
+        "near_equal_common_edge_pair_count": 1,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          103.00101510468153,
+          5.639149159056113,
+          5.639149159056121,
+          103.00101510468153
+        ],
+        "common_edge_length_mm": [
+          37.96583634361636,
+          36.502206172381086,
+          63.98409819675453,
+          33.87574506487899
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n4:011110",
+          "junction_degrees": [
+            4
+          ],
+          "piece_edge_counts": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.163,
+            0.205,
+            0.29,
+            0.343
+          ],
+          "common_length_fractions": [
+            0.278,
+            0.299,
+            0.311,
+            0.524
+          ],
+          "common_direction_bins_5deg": [
+            1,
+            1,
+            21,
+            21
+          ]
+        },
+        "generator_mode": "arrangement",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 98.2740999897942,
+      "solve_ms": 517.433599990909,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 2.0507499257379623e-13,
+        "max_area_error_mm2": 1.5916157281026244e-12,
+        "minimum_piece_distance_mm": 4.999999999999953,
+        "rectangle_coverage": 0.8730135467369611,
+        "rectangle_empty_area_mm2": 1018.2031838609028,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            156.18157244203525,
+            257.05032202049034
+          ],
+          [
+            156.18157244203525,
+            180.94967797950963
+          ],
+          [
+            50.81842755796503,
+            180.94967797950963
+          ],
+          [
+            50.81842755796503,
+            257.05032202049034
+          ],
+          [
+            156.18157244203525,
+            257.05032202049034
+          ]
+        ]
+      },
+      "input_sha256": "4e4e21d2740625b18944f0b188e0666cc2824508ef5b661f77ca7ef991345435"
+    },
+    {
+      "id": "random4-seed260243",
+      "mode": "random",
+      "count": 4,
+      "seed": 260243,
+      "generator": "mixed",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n4:011110",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 2,
+        "point_contact_locations": [
+          [
+            47.74574448418526,
+            30.72324904888299
+          ],
+          [
+            47.74574448418526,
+            30.72324904888299
+          ]
+        ],
+        "point_contacts": [
+          {
+            "pieces": [
+              0,
+              3
+            ],
+            "location_mm": [
+              47.74574448418526,
+              30.72324904888299
+            ]
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "location_mm": [
+              47.74574448418526,
+              30.72324904888299
+            ]
+          }
+        ],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          4
+        ],
+        "internal_node_positions_mm": [
+          [
+            47.74574448418526,
+            30.72324904888299
+          ]
+        ],
+        "common_edge_count": 4,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 30.906804069808896
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 53.26389489294797
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "length_mm": 48.66827190795049
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "length_mm": 39.51140858225697
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              2,
+              3
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          4,
+          4,
+          4
+        ],
+        "minimum_interior_angle_deg": 72.57887239901609,
+        "piece_aspect_ratios": [
+          1.7008049973059265,
+          1.2728191332224263,
+          1.1402407181759793,
+          1.2156235770012793
+        ],
+        "near_parallel_common_edge_pair_count": 2,
+        "near_equal_common_edge_pair_count": 0,
+        "has_t_junction": false,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": false,
+        "common_edge_direction_deg": [
+          96.24753774258889,
+          168.82641014160498,
+          168.82641014160498,
+          96.24753774258889
+        ],
+        "common_edge_length_mm": [
+          30.906804069808896,
+          53.26389489294797,
+          48.66827190795049,
+          39.51140858225697
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n4:011110",
+          "junction_degrees": [
+            4
+          ],
+          "piece_edge_counts": [
+            4,
+            4,
+            4,
+            4
+          ],
+          "area_fractions": [
+            0.183,
+            0.224,
+            0.249,
+            0.344
+          ],
+          "common_length_fractions": [
+            0.253,
+            0.324,
+            0.399,
+            0.436
+          ],
+          "common_direction_bins_5deg": [
+            19,
+            19,
+            34,
+            34
+          ]
+        },
+        "generator_mode": "arrangement",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 19.251499994425103,
+      "solve_ms": 626.9754999957513,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 1.2710574864626038e-13,
+        "max_area_error_mm2": 2.2737367544323206e-12,
+        "minimum_piece_distance_mm": 5.000000000000008,
+        "rectangle_coverage": 0.875761440519128,
+        "rectangle_empty_area_mm2": 993.0443110746992,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            156.46960795270974,
+            256.72467184489426
+          ],
+          [
+            156.46960795271002,
+            181.2753281551057
+          ],
+          [
+            50.530392047290434,
+            181.2753281551057
+          ],
+          [
+            50.530392047290434,
+            256.7246718448941
+          ],
+          [
+            156.46960795270974,
+            256.72467184489426
+          ]
+        ]
+      },
+      "input_sha256": "1327d3a1bafec7e5ed347799f80c97d7da2a22ba6d7c17b701ccd7af9dc377a4"
+    },
+    {
+      "id": "random4-seed260244",
+      "mode": "random",
+      "count": 4,
+      "seed": 260244,
+      "generator": "adversarial",
+      "status": "passed",
+      "hardware_executed": false,
+      "generator_metadata": {
+        "adjacency_graph": {
+          "nodes": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "edges": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              3
+            ]
+          ]
+        },
+        "adjacency_canonical_signature": "n4:001111",
+        "positive_length_adjacency_connected": true,
+        "positive_length_component_count": 1,
+        "positive_length_component_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "point_contact_count": 0,
+        "point_contact_locations": [],
+        "point_contacts": [],
+        "interior_node_count": 1,
+        "interior_node_degrees": [
+          3
+        ],
+        "internal_node_positions_mm": [
+          [
+            28.837454405430748,
+            40.445708868150156
+          ]
+        ],
+        "common_edge_count": 4,
+        "robust_shared_length_mm": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "length_mm": 40.63776786892605
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "length_mm": 29.03877302012595
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "length_mm": 29.694631548231882
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "length_mm": 65.62358291580321
+          }
+        ],
+        "shared_interval_count": [
+          {
+            "pieces": [
+              0,
+              1
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              0,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "pieces": [
+              1,
+              3
+            ],
+            "count": 1
+          }
+        ],
+        "piece_edge_counts": [
+          4,
+          5,
+          4,
+          3
+        ],
+        "minimum_interior_angle_deg": 35.64087709783289,
+        "piece_aspect_ratios": [
+          1.2337141797269982,
+          1.0578017567118425,
+          1.1432260663634575,
+          1.3946819481213362
+        ],
+        "near_parallel_common_edge_pair_count": 1,
+        "near_equal_common_edge_pair_count": 1,
+        "has_t_junction": true,
+        "has_multiple_internal_nodes": false,
+        "geometric_symmetry_or_ambiguity_risk": true,
+        "common_edge_direction_deg": [
+          95.5726431385945,
+          6.750589351571033,
+          95.5726431385945,
+          144.35912290216712
+        ],
+        "common_edge_length_mm": [
+          40.63776786892605,
+          29.03877302012595,
+          29.694631548231882,
+          65.62358291580321
+        ],
+        "normalized_geometry_descriptor": {
+          "graph": "n4:001111",
+          "junction_degrees": [
+            3
+          ],
+          "piece_edge_counts": [
+            3,
+            4,
+            4,
+            5
+          ],
+          "area_fractions": [
+            0.123,
+            0.146,
+            0.171,
+            0.561
+          ],
+          "common_length_fractions": [
+            0.238,
+            0.243,
+            0.333,
+            0.538
+          ],
+          "common_direction_bins_5deg": [
+            1,
+            19,
+            19,
+            29
+          ]
+        },
+        "generator_mode": "adversarial",
+        "quality_config": {
+          "min_interior_angle_deg": 20.0,
+          "max_aspect_ratio": 8.0,
+          "min_piece_area_mm2": 400.0,
+          "min_edge_length_mm": 20.0,
+          "collinear_merge_tolerance_deg": 0.25,
+          "min_junction_separation_mm": 20.0,
+          "require_positive_edge_connected": false
+        }
+      },
+      "generation_ms": 349.0334999951301,
+      "solve_ms": 4362.045500005479,
+      "metrics": {
+        "independent_checks_passed": true,
+        "overlap_mm2": 0.0,
+        "max_rigid_error_mm": 8.038873388460929e-14,
+        "max_area_error_mm2": 6.821210263296962e-13,
+        "minimum_piece_distance_mm": 4.83884823492803,
+        "rectangle_coverage": 0.842195277361327,
+        "rectangle_empty_area_mm2": 1311.6115563264902,
+        "tight_rectangle": false,
+        "rectangle_vertices": [
+          [
+            158.30932056915123,
+            257.185331007967
+          ],
+          [
+            158.30932056915123,
+            180.49002334954923
+          ],
+          [
+            49.93748127300573,
+            180.49002334954923
+          ],
+          [
+            49.93748127300573,
+            257.185331007967
+          ],
+          [
+            158.30932056915123,
+            257.185331007967
+          ]
+        ]
+      },
+      "input_sha256": "5c0e003979fa075f17ecfa47ac82c9d0f6731d7c9b555628bdbbd7153aac3d2d"
+    }
+  ],
+  "provenance": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.9 (tags/v3.12.9:fdb8142, Feb  4 2025, 15:27:58) [MSC v.1942 64 bit (AMD64)]",
+    "source_sha256": "3d984b3a1c5aca4928c03ed0da87550f78ebb3794eafe7ebc3b202d18b4225fb",
+    "timeout_seconds": 45.0,
+    "synthetic": true,
+    "noise_mm": 0,
+    "hardware_executed": false,
+    "git_commit": "5e43731a65463ea63107bd71070836c4d3dbdb90",
+    "git_dirty_at_archive": true,
+    "dependencies": {
+      "numpy": "2.2.6",
+      "scipy": "1.15.3",
+      "shapely": "2.1.2",
+      "matplotlib": "3.10.9"
+    },
+    "final_rendering_script_sha256": "41068069d3e0f6774c4fba52ade4423433c654e2f1aefafbd3789a95d1a7c312"
+  }
+}

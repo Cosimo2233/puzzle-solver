@@ -1,0 +1,41 @@
+............FF......................                         [100%]
+================================== FAILURES ===================================
+_______ FixedPlannerTest.test_fixed_plan_is_complete_and_on_lower_half ________
+
+self = <tests.unit.control.test_planner.FixedPlannerTest testMethod=test_fixed_plan_is_complete_and_on_lower_half>
+
+    def test_fixed_plan_is_complete_and_on_lower_half(self) -> None:
+        """固定四片应形成 100×60 mm 矩形并位于下半区。"""
+    
+        self.assertEqual(len(self.plan.moves), 4)
+>       self.assertAlmostEqual(self.plan.target_width_mm, 100.0)
+E       AssertionError: 111.83105462640475 != 100.0 within 7 places (11.83105462640475 difference)
+
+tests\unit\control\test_planner.py:89: AssertionError
+__ FixedPlannerTest.test_fixed_plan_uses_gapped_non_overlapping_final_layout __
+
+self = <tests.unit.control.test_planner.FixedPlannerTest testMethod=test_fixed_plan_uses_gapped_non_overlapping_final_layout>
+
+    def test_fixed_plan_uses_gapped_non_overlapping_final_layout(self) -> None:
+        """固定模板最终落位应保留约 6 mm 接缝且绝不产生面积重叠。"""
+    
+        polygons = [
+            Polygon(move.target_vertices_a4_mm)
+            for move in self.plan.moves
+        ]
+        distances = []
+        for first, polygon in enumerate(polygons):
+            for other in polygons[first + 1 :]:
+                self.assertLessEqual(
+                    polygon.intersection(other).area,
+                    1e-6,
+                )
+                distances.append(polygon.distance(other))
+>       self.assertGreaterEqual(min(distances), 5.0)
+E       AssertionError: 4.569651694999304 not greater than or equal to 5.0
+
+tests\unit\control\test_planner.py:153: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/unit/control/test_planner.py::FixedPlannerTest::test_fixed_plan_is_complete_and_on_lower_half
+FAILED tests/unit/control/test_planner.py::FixedPlannerTest::test_fixed_plan_uses_gapped_non_overlapping_final_layout
+2 failed, 34 passed, 12 subtests passed in 11.14s

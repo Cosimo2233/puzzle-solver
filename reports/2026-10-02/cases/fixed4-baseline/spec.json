@@ -1,0 +1,6 @@
+{
+  "id": "fixed4-baseline",
+  "mode": "fixed",
+  "count": 4,
+  "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\fixed4.json"
+}

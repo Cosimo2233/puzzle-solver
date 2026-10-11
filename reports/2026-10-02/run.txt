@@ -1,0 +1,31 @@
+poetry : 2026-10-02 20:10:04,213 INFO fixed4-baseline: passed
+所在位置 行:4 字符: 1
++ poetry run python -m puzzle_solver.commands.validate --output build/a ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (2026-10-02 20:1...aseline: passed:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-10-02 20:10:05,833 INFO fixed4-seed260240: passed
+2026-10-02 20:10:07,426 INFO fixed4-seed260241: passed
+2026-10-02 20:10:09,036 INFO fixed4-seed260242: passed
+2026-10-02 20:10:10,717 INFO fixed4-seed260243: passed
+2026-10-02 20:10:12,022 INFO fixed4-seed260244: passed
+2026-10-02 20:10:12,872 INFO random2-baseline: passed
+2026-10-02 20:10:13,843 INFO random2-seed260220: passed
+2026-10-02 20:10:14,752 INFO random2-seed260221: passed
+2026-10-02 20:10:15,747 INFO random2-seed260222: passed
+2026-10-02 20:10:16,672 INFO random2-seed260223: passed
+2026-10-02 20:10:17,655 INFO random2-seed260224: passed
+2026-10-02 20:10:18,682 INFO random3-baseline: passed
+2026-10-02 20:10:19,637 INFO random3-seed260230: passed
+2026-10-02 20:10:20,683 INFO random3-seed260231: passed
+2026-10-02 20:10:21,684 INFO random3-seed260232: passed
+2026-10-02 20:10:22,684 INFO random3-seed260233: passed
+2026-10-02 20:10:23,840 INFO random3-seed260234: passed
+2026-10-02 20:10:25,287 INFO random4-baseline: passed
+2026-10-02 20:10:27,750 INFO random4-seed260240: passed
+2026-10-02 20:10:29,201 INFO random4-seed260241: passed
+2026-10-02 20:10:30,660 INFO random4-seed260242: passed
+2026-10-02 20:10:32,182 INFO random4-seed260243: passed
+2026-10-02 20:10:37,753 INFO random4-seed260244: passed
+2026-10-02 20:10:38,610 INFO 报告：D:\FPGA\puzzle-solver\build\algorithm-validation-20261002\index.html

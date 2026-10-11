@@ -1,0 +1,138 @@
+{
+  "id": "random2-seed260222",
+  "mode": "random",
+  "count": 2,
+  "seed": 260222,
+  "generator": "arrangement",
+  "status": "passed",
+  "hardware_executed": false,
+  "generator_metadata": {
+    "adjacency_graph": {
+      "nodes": [
+        0,
+        1
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "adjacency_canonical_signature": "n2:1",
+    "positive_length_adjacency_connected": true,
+    "positive_length_component_count": 1,
+    "positive_length_component_ids": [
+      0,
+      0
+    ],
+    "point_contact_count": 0,
+    "point_contact_locations": [],
+    "point_contacts": [],
+    "interior_node_count": 0,
+    "interior_node_degrees": [],
+    "internal_node_positions_mm": [],
+    "common_edge_count": 1,
+    "robust_shared_length_mm": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "length_mm": 65.15665646750169
+      }
+    ],
+    "shared_interval_count": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "count": 1
+      }
+    ],
+    "piece_edge_counts": [
+      3,
+      5
+    ],
+    "minimum_interior_angle_deg": 26.555673978566542,
+    "piece_aspect_ratios": [
+      2.5006140208959344,
+      1.4285714285714286
+    ],
+    "near_parallel_common_edge_pair_count": 0,
+    "near_equal_common_edge_pair_count": 0,
+    "has_t_junction": false,
+    "has_multiple_internal_nodes": false,
+    "geometric_symmetry_or_ambiguity_risk": false,
+    "common_edge_direction_deg": [
+      153.44432602143345
+    ],
+    "common_edge_length_mm": [
+      65.15665646750169
+    ],
+    "normalized_geometry_descriptor": {
+      "graph": "n2:1",
+      "junction_degrees": [],
+      "piece_edge_counts": [
+        3,
+        5
+      ],
+      "area_fractions": [
+        0.121,
+        0.879
+      ],
+      "common_length_fractions": [
+        0.534
+      ],
+      "common_direction_bins_5deg": [
+        31
+      ]
+    },
+    "generator_mode": "arrangement",
+    "quality_config": {
+      "min_interior_angle_deg": 20.0,
+      "max_aspect_ratio": 8.0,
+      "min_piece_area_mm2": 400.0,
+      "min_edge_length_mm": 20.0,
+      "collinear_merge_tolerance_deg": 0.25,
+      "min_junction_separation_mm": 20.0,
+      "require_positive_edge_connected": false
+    }
+  },
+  "generation_ms": 14.867199992295355,
+  "solve_ms": 83.20570000796579,
+  "metrics": {
+    "independent_checks_passed": true,
+    "overlap_mm2": 0.0,
+    "max_rigid_error_mm": 5.684341886080802e-14,
+    "max_area_error_mm2": 2.7284841053187847e-12,
+    "minimum_piece_distance_mm": 4.999999999999984,
+    "rectangle_coverage": 0.9193927343028026,
+    "rectangle_empty_area_mm2": 613.7212518959777,
+    "tight_rectangle": false,
+    "rectangle_vertices": [
+      [
+        154.61766801220904,
+        181.76374907166468
+      ],
+      [
+        52.38233198778989,
+        181.76374907166442
+      ],
+      [
+        52.382331987790934,
+        256.2362509283363
+      ],
+      [
+        154.61766801221012,
+        256.2362509283356
+      ],
+      [
+        154.61766801220904,
+        181.76374907166468
+      ]
+    ]
+  },
+  "input_sha256": "0ea9afb967bcd6cc00ef9a643dee4df7c9c52d05a5995d840cd3f28feef27ccd"
+}

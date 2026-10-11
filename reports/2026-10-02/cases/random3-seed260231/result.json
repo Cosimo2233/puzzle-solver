@@ -1,0 +1,197 @@
+{
+  "id": "random3-seed260231",
+  "mode": "random",
+  "count": 3,
+  "seed": 260231,
+  "generator": "recursive",
+  "status": "passed",
+  "hardware_executed": false,
+  "generator_metadata": {
+    "adjacency_graph": {
+      "nodes": [
+        0,
+        1,
+        2
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    "adjacency_canonical_signature": "n3:111",
+    "positive_length_adjacency_connected": true,
+    "positive_length_component_count": 1,
+    "positive_length_component_ids": [
+      0,
+      0,
+      0
+    ],
+    "point_contact_count": 0,
+    "point_contact_locations": [],
+    "point_contacts": [],
+    "interior_node_count": 1,
+    "interior_node_degrees": [
+      3
+    ],
+    "internal_node_positions_mm": [
+      [
+        82.77923765846423,
+        20.837538713834505
+      ]
+    ],
+    "common_edge_count": 3,
+    "robust_shared_length_mm": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "length_mm": 34.28174292856987
+      },
+      {
+        "pieces": [
+          0,
+          2
+        ],
+        "length_mm": 21.686823370385575
+      },
+      {
+        "pieces": [
+          1,
+          2
+        ],
+        "length_mm": 61.17792250150968
+      }
+    ],
+    "shared_interval_count": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "count": 1
+      },
+      {
+        "pieces": [
+          0,
+          2
+        ],
+        "count": 1
+      },
+      {
+        "pieces": [
+          1,
+          2
+        ],
+        "count": 1
+      }
+    ],
+    "piece_edge_counts": [
+      3,
+      5,
+      4
+    ],
+    "minimum_interior_angle_deg": 37.4329035160528,
+    "piece_aspect_ratios": [
+      1.3063901736227053,
+      1.1825605379780604,
+      1.4194838769078004
+    ],
+    "near_parallel_common_edge_pair_count": 1,
+    "near_equal_common_edge_pair_count": 0,
+    "has_t_junction": true,
+    "has_multiple_internal_nodes": false,
+    "geometric_symmetry_or_ambiguity_risk": false,
+    "common_edge_direction_deg": [
+      37.43290351605279,
+      37.43290351605279,
+      126.5249191367439
+    ],
+    "common_edge_length_mm": [
+      34.28174292856987,
+      21.686823370385575,
+      61.17792250150968
+    ],
+    "normalized_geometry_descriptor": {
+      "graph": "n3:111",
+      "junction_degrees": [
+        3
+      ],
+      "piece_edge_counts": [
+        3,
+        4,
+        5
+      ],
+      "area_fractions": [
+        0.108,
+        0.233,
+        0.659
+      ],
+      "common_length_fractions": [
+        0.178,
+        0.281,
+        0.501
+      ],
+      "common_direction_bins_5deg": [
+        7,
+        7,
+        25
+      ]
+    },
+    "generator_mode": "recursive",
+    "quality_config": {
+      "min_interior_angle_deg": 20.0,
+      "max_aspect_ratio": 8.0,
+      "min_piece_area_mm2": 400.0,
+      "min_edge_length_mm": 20.0,
+      "collinear_merge_tolerance_deg": 0.25,
+      "min_junction_separation_mm": 20.0,
+      "require_positive_edge_connected": false
+    }
+  },
+  "generation_ms": 11.813799996161833,
+  "solve_ms": 178.48550000053365,
+  "metrics": {
+    "independent_checks_passed": true,
+    "overlap_mm2": 0.0,
+    "max_rigid_error_mm": 1.1368683772161603e-13,
+    "max_area_error_mm2": 1.8189894035458565e-12,
+    "minimum_piece_distance_mm": 4.8936519317614104,
+    "rectangle_coverage": 0.8835349584527835,
+    "rectangle_empty_area_mm2": 922.7199026263352,
+    "tight_rectangle": false,
+    "rectangle_vertices": [
+      [
+        156.31867074912856,
+        181.090394534
+      ],
+      [
+        51.76674640770044,
+        181.090394534
+      ],
+      [
+        51.76674640770044,
+        256.86824322049233
+      ],
+      [
+        156.31867074912856,
+        256.86824322049233
+      ],
+      [
+        156.31867074912856,
+        181.090394534
+      ]
+    ]
+  },
+  "input_sha256": "08db4c6f4da8044941956be8107d060573153118839e6ff33ace5e2cb6091e9d"
+}

@@ -1,0 +1,138 @@
+{
+  "id": "random2-seed260221",
+  "mode": "random",
+  "count": 2,
+  "seed": 260221,
+  "generator": "recursive",
+  "status": "passed",
+  "hardware_executed": false,
+  "generator_metadata": {
+    "adjacency_graph": {
+      "nodes": [
+        0,
+        1
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "adjacency_canonical_signature": "n2:1",
+    "positive_length_adjacency_connected": true,
+    "positive_length_component_count": 1,
+    "positive_length_component_ids": [
+      0,
+      0
+    ],
+    "point_contact_count": 0,
+    "point_contact_locations": [],
+    "point_contacts": [],
+    "interior_node_count": 0,
+    "interior_node_degrees": [],
+    "internal_node_positions_mm": [],
+    "common_edge_count": 1,
+    "robust_shared_length_mm": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "length_mm": 74.18932698329448
+      }
+    ],
+    "shared_interval_count": [
+      {
+        "pieces": [
+          0,
+          1
+        ],
+        "count": 1
+      }
+    ],
+    "piece_edge_counts": [
+      5,
+      3
+    ],
+    "minimum_interior_angle_deg": 27.656668060506824,
+    "piece_aspect_ratios": [
+      1.4285714285714286,
+      2.4322717991692056
+    ],
+    "near_parallel_common_edge_pair_count": 0,
+    "near_equal_common_edge_pair_count": 0,
+    "has_t_junction": false,
+    "has_multiple_internal_nodes": false,
+    "geometric_symmetry_or_ambiguity_risk": false,
+    "common_edge_direction_deg": [
+      152.34333193949317
+    ],
+    "common_edge_length_mm": [
+      74.18932698329448
+    ],
+    "normalized_geometry_descriptor": {
+      "graph": "n2:1",
+      "junction_degrees": [],
+      "piece_edge_counts": [
+        3,
+        5
+      ],
+      "area_fractions": [
+        0.162,
+        0.838
+      ],
+      "common_length_fractions": [
+        0.608
+      ],
+      "common_direction_bins_5deg": [
+        30
+      ]
+    },
+    "generator_mode": "recursive",
+    "quality_config": {
+      "min_interior_angle_deg": 20.0,
+      "max_aspect_ratio": 8.0,
+      "min_piece_area_mm2": 400.0,
+      "min_edge_length_mm": 20.0,
+      "collinear_merge_tolerance_deg": 0.25,
+      "min_junction_separation_mm": 20.0,
+      "require_positive_edge_connected": false
+    }
+  },
+  "generation_ms": 9.870800000499003,
+  "solve_ms": 86.50140000099782,
+  "metrics": {
+    "independent_checks_passed": true,
+    "overlap_mm2": 0.0,
+    "max_rigid_error_mm": 1.7053025658242404e-13,
+    "max_area_error_mm2": 0.0,
+    "minimum_piece_distance_mm": 5.000000000000121,
+    "rectangle_coverage": 0.9191645677352028,
+    "rectangle_empty_area_mm2": 615.611225362848,
+    "tight_rectangle": false,
+    "rectangle_vertices": [
+      [
+        52.33956924270161,
+        181.78563768603323
+      ],
+      [
+        52.33956924270161,
+        256.21436231396666
+      ],
+      [
+        154.66043075729857,
+        256.21436231396666
+      ],
+      [
+        154.66043075729857,
+        181.78563768603323
+      ],
+      [
+        52.33956924270161,
+        181.78563768603323
+      ]
+    ]
+  },
+  "input_sha256": "8f5fda3ded22b3579cb5440b32cb7542b42940d2996081ca039e8242b9869973"
+}

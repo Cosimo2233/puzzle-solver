@@ -69,18 +69,37 @@ def soft_l1_pose(
     source: np.ndarray, target: np.ndarray, initial: tuple[float, np.ndarray, float], weights: np.ndarray
 ) -> tuple[float, np.ndarray, float]:
     angle0, translation0, _ = initial
+    sqrt_weights = np.sqrt(weights[:, None])
+    target_edges = np.roll(target, -1, axis=0) - target
+    edge_scale = 0.35 / np.maximum(np.linalg.norm(target_edges, axis=1), 1e-6)
 
     def residual(params: np.ndarray) -> np.ndarray:
-        vertex = (transform_points(source, params[0], params[1:3]) - target) * np.sqrt(weights[:, None])
         fitted = transform_points(source, params[0], params[1:3])
+        vertex = (fitted - target) * sqrt_weights
         observed_edges = np.roll(fitted, -1, axis=0) - fitted
-        target_edges = np.roll(target, -1, axis=0) - target
         cross = observed_edges[:, 0] * target_edges[:, 1] - observed_edges[:, 1] * target_edges[:, 0]
-        direction = cross / np.maximum(np.linalg.norm(target_edges, axis=1), 1e-6)
-        return np.concatenate((vertex.ravel(), 0.35 * direction))
+        return np.concatenate((vertex.ravel(), edge_scale * cross))
+
+    def jacobian(params: np.ndarray) -> np.ndarray:
+        # 求解器的角度单位是度；解析 SE(2) 导数避免每轮三次有限差分。
+        radians = math.radians(float(params[0]))
+        sine, cosine = math.sin(radians), math.cos(radians)
+        derivative_rotation = np.asarray([[-sine, -cosine], [cosine, -sine]]) * (math.pi / 180.0)
+        derivative = source @ derivative_rotation.T
+        jac = np.zeros((3 * len(source), 3), dtype=float)
+        jac[:2 * len(source), 0] = (derivative * sqrt_weights).ravel()
+        jac[:2 * len(source):2, 1] = sqrt_weights[:, 0]
+        jac[1:2 * len(source):2, 2] = sqrt_weights[:, 0]
+        edge_derivative = np.roll(derivative, -1, axis=0) - derivative
+        jac[2 * len(source):, 0] = edge_scale * (
+            edge_derivative[:, 0] * target_edges[:, 1]
+            - edge_derivative[:, 1] * target_edges[:, 0]
+        )
+        return jac
 
     result = least_squares(
-        residual, np.r_[angle0, translation0], loss="soft_l1", f_scale=1.5, max_nfev=500
+        residual, np.r_[angle0, translation0], jac=jacobian,
+        loss="soft_l1", f_scale=1.5, max_nfev=500
     )
     angle = normalize_angle(float(result.x[0]))
     translation = result.x[1:3]

@@ -199,16 +199,22 @@ def solve_fixed(
     if len(pieces) != 4:
         raise ValueError("fixed 模式必须恰好有 4 片")
     candidates: list[FixedCandidate] = []
+    # 同一观测片与模板的位姿不依赖全排列中的其他片。缓存仅属于本次
+    # 求解，同时缓存不相容的配对，避免在 24 个排列中重复鲁棒拟合。
+    pose_cache: dict[tuple[int, str], PoseCandidate | None] = {}
     for perm in permutations(templates):
         poses: list[PoseCandidate] = []
         valid = True
-        for observed, template_piece in zip(pieces, perm):
-            pose = _best_pose(
-                observed,
-                template_piece.piece_template_id,
-                np.asarray(template_piece.corner_vertices, dtype=float),
-                uncertainty_mm,
-            )
+        for index, (observed, template_piece) in enumerate(zip(pieces, perm)):
+            key = (index, template_piece.piece_template_id)
+            if key not in pose_cache:
+                pose_cache[key] = _best_pose(
+                    observed,
+                    template_piece.piece_template_id,
+                    np.asarray(template_piece.corner_vertices, dtype=float),
+                    uncertainty_mm,
+                )
+            pose = pose_cache[key]
             if pose is None:
                 valid = False
                 break

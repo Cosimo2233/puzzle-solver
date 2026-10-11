@@ -1,0 +1,44 @@
+{
+  "id": "fixed4-seed260243",
+  "mode": "fixed",
+  "count": 4,
+  "seed": 260243,
+  "generator": "fixed",
+  "status": "passed",
+  "hardware_executed": false,
+  "generation_ms": 4.161300006671809,
+  "solve_ms": 758.9712000044528,
+  "metrics": {
+    "independent_checks_passed": true,
+    "overlap_mm2": 0.0,
+    "max_rigid_error_mm": 9.947598300641403e-14,
+    "max_area_error_mm2": 1.3642420526593924e-12,
+    "minimum_piece_distance_mm": 4.569651694999292,
+    "rectangle_coverage": 0.7309585828631588,
+    "rectangle_empty_area_mm2": 2208.3994095781045,
+    "tight_rectangle": false,
+    "rectangle_vertices": [
+      [
+        50.000000000000014,
+        180.55
+      ],
+      [
+        50.000000000000014,
+        253.95
+      ],
+      [
+        161.83105462640478,
+        253.95
+      ],
+      [
+        161.83105462640478,
+        180.55
+      ],
+      [
+        50.000000000000014,
+        180.55
+      ]
+    ]
+  },
+  "input_sha256": "022a0c2345f940de4d712c12b072abe32159c0cdf91651e3207e1988194514ce"
+}

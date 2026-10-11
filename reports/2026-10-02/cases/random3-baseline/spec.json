@@ -1,0 +1,6 @@
+{
+  "id": "random3-baseline",
+  "mode": "random",
+  "count": 3,
+  "baseline": "D:\\FPGA\\puzzle-solver\\baselines\\random3.json"
+}
