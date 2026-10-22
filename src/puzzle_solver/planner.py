@@ -9,6 +9,7 @@ import numpy as np
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from puzzle_solver.acceleration import ClearanceScanBackend, RigidFitBackend
+from puzzle_solver.candidate_acceleration import CandidateScanBackend, candidate_acceleration
 
 from puzzle_solver._engine.geometry import clean_vertices
 from puzzle_solver._engine.solver.preprocess import (
@@ -86,6 +87,7 @@ def plan_sheet_moves(
     *,
     rigid_backend: RigidFitBackend | None = None,
     clearance_backend: ClearanceScanBackend | None = None,
+    candidate_backend: CandidateScanBackend | None = None,
 ) -> MovePlan:
     """同步计算纸片拼成矩形所需的完整移动方案。
 
@@ -134,21 +136,8 @@ def plan_sheet_moves(
         input_path = root / "observations.json"
         input_path.write_text(json.dumps(payload), encoding="utf-8")
         try:
-            result = solve_observations(
-                input_path,
-                root / "solution",
-                print_plan=False,
-                rigid_backend=rigid_backend,
-                clearance_backend=clearance_backend,
-                runtime_config={
-                    "execution_profile": "production",
-                    "top_n": options.search_top_n,
-                    # 几何复刻不要求图案唯一，但必须通过几何及机械检查。
-                    "execution_policy": "strict",
-                    "minimum_execution_confidence": options.minimum_execution_confidence,
-                    "random_competition_rules": options.competition_rules,
-                },
-            )
+            with candidate_acceleration(candidate_backend):
+                result = _solve_with_options(input_path, root, options, rigid_backend, clearance_backend)
         finally:
             # 求解器创建文件日志处理器；临时目录删除前必须显式关闭。
             logger = logging.getLogger("puzzle_solver")
@@ -174,4 +163,22 @@ def plan_sheet_moves(
         target_height_mm=float(target["height_mm"]),
         target_center_a4_mm=_point(target["center_a4_mm"]),
         moves=tuple(_to_move(move) for move in result["moves"]),
+    )
+
+
+def _solve_with_options(input_path, root, options, rigid_backend, clearance_backend):
+    return solve_observations(
+        input_path,
+        root / "solution",
+        print_plan=False,
+        rigid_backend=rigid_backend,
+        clearance_backend=clearance_backend,
+        runtime_config={
+            "execution_profile": "production",
+            "top_n": options.search_top_n,
+            # 几何复刻不要求图案唯一，但必须通过几何及机械检查。
+            "execution_policy": "strict",
+            "minimum_execution_confidence": options.minimum_execution_confidence,
+            "random_competition_rules": options.competition_rules,
+        },
     )

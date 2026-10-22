@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from itertools import combinations
+import json
+import logging
+from time import perf_counter
 
 import numpy as np
 from shapely.geometry import Polygon
@@ -14,6 +17,7 @@ from ..planning.clearance_planner import (
     pairwise_positive_overlap_area,
 )
 from .random_safety import ReconstructedInterface, ReconstructedTopology
+from puzzle_solver.candidate_acceleration import scan_candidate_distances, cannot_improve
 
 
 def _workspace_shift(arrays: list[np.ndarray], deltas: np.ndarray) -> np.ndarray | None:
@@ -199,11 +203,22 @@ def plan_random_clearance(
     # 线性拼缝解处理普通链式拓扑；统一质心膨胀处理带环和多向结点。
     for factor in np.linspace(0.65, 1.35, 29):
         candidates.append(least_squares * float(factor))
+    radial = _radial_solution(arrays, 1.0)
     for scale in np.linspace(0.0, maximum_radial_scale, 161):
-        candidates.append(_radial_solution(arrays, float(scale)))
+        candidates.append(float(scale) * radial)
+
+    scan_started = perf_counter()
+    distances = scan_candidate_distances(arrays, candidates)
+    scan_seconds = perf_counter() - scan_started
+    adjacency_indices = [i for i, pair in enumerate(combinations(range(len(arrays)), 2)) if pair in adjacency]
+    pruned = 0
 
     best: tuple[tuple[float, ...], np.ndarray, list[Polygon], tuple[InterfaceClearanceMetrics, ...], float] | None = None
-    for raw_deltas in candidates:
+    for candidate_index, raw_deltas in enumerate(candidates):
+        if distances is not None and cannot_improve(distances[candidate_index], adjacency_indices,
+                best[0] if best else None, minimum_gap_mm, maximum_gap_mm, target_gap_mm):
+            pruned += 1
+            continue
         deltas = _workspace_shift(arrays, raw_deltas)
         if deltas is None:
             continue
@@ -241,6 +256,9 @@ def plan_random_clearance(
         best = ((1.0, 1.0, float("inf"), float("inf"), float("inf"), 0.0), zero, polygons, metrics, endpoint_distance)
 
     score, deltas, polygons, metrics, endpoint_distance = best
+    logging.getLogger(__name__).info('CANDIDATE_CLEARANCE_PERFORMANCE %s', json.dumps(
+        dict(candidates=len(candidates), pruned=pruned, accelerated=distances is not None,
+             scan_seconds=scan_seconds)))
     overlap = pairwise_positive_overlap_area(polygons)
     gaps = [metric.nominal_normal_gap_mm for metric in metrics]
     buffer_radius = float(
