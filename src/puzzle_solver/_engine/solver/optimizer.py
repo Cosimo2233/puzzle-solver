@@ -219,6 +219,7 @@ def optimize_generic_candidate(
     interfaces: list | None = None,
     discovered_interfaces: list[dict] | None = None,
     max_nfev_override: int | None = None,
+    dimension_bounds: tuple[tuple[float, float], tuple[float, float]] | None = None,
 ) -> tuple[list[dict], float, float, dict]:
     """对搜索得到的链式公共边候选做通用联合优化。
 
@@ -399,6 +400,12 @@ def optimize_generic_candidate(
         residual_call_count += 1
         return model.residual(params)
 
+    bounds = (-np.inf, np.inf)
+    if dimension_bounds is not None:
+        lower, upper = np.full_like(x0, -np.inf), np.full_like(x0, np.inf)
+        lower[-2:], upper[-2:] = dimension_bounds
+        x0[-2:] = np.clip(x0[-2:], lower[-2:], upper[-2:])
+        bounds = (lower, upper)
     before = float(np.sqrt(np.mean(residual(x0) ** 2)))
     exact_before = exact_geometry_metrics(
         model.transformed(x0), float(x0[-2]), float(x0[-1])
@@ -407,7 +414,7 @@ def optimize_generic_candidate(
     if max_nfev_override is not None:
         max_nfev = max(20, min(max_nfev, int(max_nfev_override)))
     result = least_squares(
-        residual, x0, loss="soft_l1", f_scale=2.0, max_nfev=max_nfev
+        residual, x0, loss="soft_l1", f_scale=2.0, max_nfev=max_nfev, bounds=bounds
     )
     after = float(np.sqrt(np.mean(residual(result.x) ** 2)))
     exact_after = exact_geometry_metrics(

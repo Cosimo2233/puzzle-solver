@@ -131,7 +131,7 @@ class RecoveryCoordinator:
         return self.remaining_solve_seconds() >= required
 
     def consider(self, variant: "EvaluatedVariant") -> None:
-        """保留机械可执行变体；几何门结论仅决定其中的质量次序。"""
+        """完整合格变体优先；可执行诊断候选不能压过已通过全部检查的解。"""
 
         if not variant.machine_executable:
             return
@@ -145,14 +145,27 @@ class RecoveryCoordinator:
                 for item in self.safe_candidates
             ):
                 self.safe_candidates.append(variant)
-                self.safe_candidates.sort(key=lambda item: item.quality_key)
+                self.safe_candidates.sort(key=lambda item: (not item.safe, item.quality_key))
                 del self.safe_candidates[
                     self.config.max_appearance_candidates:
                 ]
-        if self.incumbent is None or variant.quality_key < self.incumbent.quality_key:
+        if self.incumbent is None or (not variant.safe, variant.quality_key) < (
+            not self.incumbent.safe, self.incumbent.quality_key
+        ):
             self.incumbent = variant
 
     def should_continue_candidates(self) -> bool:
+        # Shape-only solving is complete once the selected incumbent passed
+        # geometry, clearance and motion validation. A merely executable
+        # diagnostic candidate must never trigger this shortcut. Patterned
+        # matching still needs alternatives for appearance disambiguation.
+        if (
+            self.surface_mode == "white"
+            and self.incumbent is not None
+            and self.incumbent.safe
+            and self.incumbent.machine_executable
+        ):
+            return False
         if self.monotonic_fn() >= self.solve_deadline:
             return False
         stages = ("quick_geometry", "clearance", "motion")
@@ -659,6 +672,7 @@ def recover_random_candidate(
     monotonic_fn: Callable[[], float] = perf_counter,
     surface_mode: str = "white",
     uncertainty_profile: ObservationUncertaintyProfile | None = None,
+    rigid_backend=None,
 ) -> RecoveryOutcome:
     """Search progressively without using a generator noise label as control."""
     profile = uncertainty_profile or ObservationUncertaintyProfile(
@@ -856,6 +870,8 @@ def recover_random_candidate(
                 candidate.matches,
                 candidate.interfaces,
                 discovered.get("interfaces", []),
+                dimension_bounds=((90.0, 50.0), (120.0, 90.0))
+                    if config.random_competition_rules else None,
                 max_nfev_override=max(
                     20,
                     min(
@@ -959,6 +975,7 @@ def recover_random_candidate(
             anchor_index=anchor_index,
             deadline=deadline,
             runtime_config=config,
+            rigid_backend=rigid_backend,
             on_candidate=evaluate,
             diagnostics=diagnostics,
             stage_timer=stage_timer,

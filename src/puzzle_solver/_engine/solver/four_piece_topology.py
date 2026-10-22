@@ -12,6 +12,7 @@ from time import perf_counter
 from typing import Any, Callable
 
 import numpy as np
+from puzzle_solver.acceleration import RigidFitRequest, fit_search_batch
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
@@ -102,48 +103,42 @@ def _fan_hypotheses(
     hypotheses: list[
         tuple[float, tuple[int, ...], tuple[int, ...], tuple[bool, ...]]
     ] = []
+    # Endpoint geometry depends only on the piece and corner, not on the 6*5^4*8
+    # possible arrangements. Avoid thousands of repeated NumPy norm allocations.
+    incident_cache = {
+        (index, center, flipped): _fan_incident_vertices(piece, center, flipped)
+        for index, piece in enumerate(pieces)
+        for center in range(len(piece.vertices))
+        for flipped in (False, True)
+    }
     # 固定第一片消除循环旋转；反向循环仍保留，用于吸收轮廓方向差异。
+    # Corner products and radial compatibility are vectorized; the evidence and
+    # ranking are unchanged. Only 48 order/handedness combinations run in Python.
     for tail in permutations(range(1, 4)):
         order = (0, *tail)
-        ordered = [pieces[index] for index in order]
-        center_ranges = [range(len(piece.vertices)) for piece in ordered]
-        for centers in product(*center_ranges):
-            angle_sum = sum(
-                float(piece.internal_angles[center])
-                for piece, center in zip(ordered, centers)
-            )
-            angle_residual = abs(angle_sum - 360.0)
-            if angle_residual > 55.0:
-                continue
-            # 固定第一片方向，其他三片的左右径向角色仍需枚举。
-            for tail_flips in product((False, True), repeat=3):
-                flips = (False, *tail_flips)
-                incident = [
-                    _fan_incident_vertices(piece, center, flipped)
-                    for piece, center, flipped
-                    in zip(ordered, centers, flips)
-                ]
-                length_cost = 0.0
-                valid = True
-                for index in range(4):
-                    right_length = incident[index][4]
-                    left_length = incident[(index + 1) % 4][3]
-                    difference = abs(right_length - left_length)
-                    limit = max(
-                        2.2 * tolerance_mm,
-                        0.14 * max(right_length, left_length),
-                    )
-                    if difference > limit:
-                        valid = False
-                        break
-                    length_cost += difference / max(limit, 1e-9)
-                if valid:
-                    hypotheses.append((
-                        0.04 * angle_residual + length_cost,
-                        tuple(order),
-                        tuple(int(value) for value in centers),
-                        tuple(bool(value) for value in flips),
-                    ))
+        centers = np.asarray(list(product(*(range(len(pieces[i].vertices)) for i in order))), dtype=int)
+        residuals = np.abs(sum(pieces[i].internal_angles[centers[:, j]]
+                              for j, i in enumerate(order)) - 360.0)
+        keep = residuals <= 55.0
+        centers, residuals = centers[keep], residuals[keep]
+        if not len(centers):
+            continue
+        for tail_flips in product((False, True), repeat=3):
+            flips = (False, *tail_flips)
+            left = np.column_stack([
+                np.asarray([incident_cache[(i, c, flipped)][3] for c in range(len(pieces[i].vertices))])[centers[:, j]]
+                for j, (i, flipped) in enumerate(zip(order, flips))])
+            right = np.column_stack([
+                np.asarray([incident_cache[(i, c, flipped)][4] for c in range(len(pieces[i].vertices))])[centers[:, j]]
+                for j, (i, flipped) in enumerate(zip(order, flips))])
+            next_left = np.roll(left, -1, axis=1)
+            difference = np.abs(right - next_left)
+            limit = np.maximum(2.2 * tolerance_mm, 0.14 * np.maximum(right, next_left))
+            valid = np.all(difference <= limit, axis=1)
+            costs = 0.04 * residuals + np.sum(difference / np.maximum(limit, 1e-9), axis=1)
+            for row in np.flatnonzero(valid):
+                hypotheses.append((float(costs[row]), tuple(order),
+                    tuple(int(v) for v in centers[row]), tuple(flips)))
     hypotheses.sort(key=lambda row: (row[0], row[1], row[2], row[3]))
     return hypotheses[:maximum_hypotheses]
 
@@ -310,12 +305,18 @@ def _component_result(
 def _subassembly_rank(component: PartitionComponent) -> tuple[float, ...]:
     """评价未完成子装配，只看闭合紧凑度和接口代价，不套最终尺寸。"""
 
-    shape = component.shape
-    convex_gap = 1.0 - float(shape.area / max(shape.convex_hull.area, 1e-9))
-    rectangle_gap = 1.0 - float(
-        shape.area / max(shape.minimum_rotated_rectangle.area, 1e-9)
-    )
-    return convex_gap, rectangle_gap, component.cost
+    convex_gap, rectangle_gap = component.partial_rank
+    return _stable_partial_rank((convex_gap, rectangle_gap, component.cost))
+
+
+def _stable_partial_rank(rank: tuple[float, ...]) -> tuple[float, ...]:
+    """Ignore sub-micron floating point tie noise only when ordering search work.
+
+    CPU/Float32 fits of an exactly convex subassembly otherwise differ around
+    zero and can reverse every later ranking criterion. Geometry admission and
+    final rectangle checks continue to use their unrounded measurements.
+    """
+    return round(rank[0], 6), round(rank[1], 6), round(rank[2], 3)
 
 
 def _disjoint_pair_tree_candidates(
@@ -359,7 +360,7 @@ def _disjoint_pair_tree_candidates(
             for first in pair_options.get(first_pair, [])
             for second in pair_options.get(second_pair, [])
         )
-    combinations_to_try.sort(key=lambda row: _state_rank(list(row)))
+    combinations_to_try.sort(key=lambda row: _stable_partial_rank(_state_rank(list(row))))
     for first, second in combinations_to_try[:144]:
         if _deadline_reached(deadline):
             break
@@ -540,6 +541,8 @@ def enumerate_four_piece_candidates(
     maximum_merge_options: int = 64,
     maximum_states_per_depth: int = 32,
     on_state: Callable[[], bool] | None = None,
+    strict_only: bool = False,
+    _run_strict_probe: bool = True,
     **_unused: Any,
 ) -> tuple[list[PartitionSearchResult], dict[str, Any]]:
     """用边链证据枚举四片的全部二叉分割解释。
@@ -550,10 +553,39 @@ def enumerate_four_piece_candidates(
     """
 
     started = perf_counter()
+    # Whole-chain matches have a much smaller search space than endpoint-sourced
+    # T-junction variants. Probe them first; retain the full search on failure.
+    # Whole-chain matching also applies to triangular, pentagonal and concave
+    # pieces. Restricting this probe to quadrilaterals sent real mixed cards
+    # through the much larger endpoint-partial search before validating a plan.
+    if _run_strict_probe and all(3 <= len(piece.vertices) <= 5 for piece in pieces):
+        strict_deadline = min(deadline, started+3.0) if deadline is not None else started+3.0
+        strict_results, strict_diagnostics = _enumerate_recursive_partition_candidates(
+            pieces, tolerance_mm=tolerance_mm, deadline=strict_deadline,
+            maximum_results=maximum_results, maximum_merge_options=24,
+            maximum_states_per_depth=32, allow_endpoint_partials=False,
+            preserve_leaf_edges=False, on_state=on_state, _run_strict_probe=False)
+        if strict_only:
+            # These are proposals, not admitted solutions. Publish the best few
+            # immediately to the full geometry/execution gates. A noisy IoU just
+            # below the fast-stop heuristic must not discard a valid topology.
+            strict_diagnostics.update(piece_count_branch='four_piece_edge_evidence_graph',
+                partition_search_phase='strict_edge_chains',
+                partition_search_strict_probe_succeeded=False)
+            return [PartitionSearchResult(r.poses, r.evidence, r.cost, 'edge_evidence_graph')
+                    for r in strict_results[:8]], strict_diagnostics
+        exact = [result for result in strict_results if (
+            lambda rank: rank[0] <= 1.0 and rank[1] <= .025)(_rectangle_rank(
+                PartitionComponent(result.poses, unary_union([Polygon(p[2]) for p in result.poses.values()]),
+                                   result.evidence, result.cost)))]
+        if exact:
+            strict_diagnostics.update(piece_count_branch='four_piece_edge_evidence_graph',
+                partition_search_phase='strict_edge_chains', partition_search_strict_probe_succeeded=True)
+            return [PartitionSearchResult(r.poses,r.evidence,r.cost,'edge_evidence_graph') for r in exact], strict_diagnostics
     junction_deadline = (
-        started + 2.0
+        perf_counter() + 2.0
         if deadline is None
-        else min(deadline, started + 2.0)
+        else min(deadline, perf_counter() + 2.0)
     )
     junction_raw, junction_expanded = _fan_candidates(
         pieces,
@@ -570,6 +602,38 @@ def enumerate_four_piece_candidates(
         )
         for result in junction_raw
     ]
+    # A closed four-way junction already supplies the complete edge-evidence graph.
+    # White/shape-only solving does not need to spend another 7 s enumerating
+    # disjoint trees for the same assembly. Refit actual piece poses in one batch;
+    # admission, clearance and the final execution gate still run in search/solve.
+    closed_junctions = []
+    for result in junction_results:
+        component = PartitionComponent(result.poses,
+            unary_union([Polygon(pose[2]) for pose in result.poses.values()]),
+            result.evidence, result.cost)
+        rank = _rectangle_rank(component)
+        if rank[0] <= 1.0 and rank[1] <= 0.025:
+            closed_junctions.append(result)
+    if closed_junctions:
+        by_id = {piece.piece_id: piece for piece in pieces}
+        for result in closed_junctions:
+            ids = list(result.poses)
+            fits = fit_search_batch([RigidFitRequest(by_id[key].vertices, result.poses[key][2]) for key in ids])
+            for key, fit in zip(ids, fits):
+                result.poses[key] = (fit.angle, fit.translation,
+                    transform_points(by_id[key].vertices, fit.angle, fit.translation))
+        return closed_junctions[:maximum_results], {
+            'piece_count_branch': 'four_piece_edge_evidence_graph',
+            'partition_search_policy': 'topology_agnostic_directed_edge_chain_graph',
+            'partition_search_phase': 'closed_multiway_junction',
+            'partition_search_tolerance_mm': tolerance_mm,
+            'partition_search_elapsed_seconds': perf_counter()-started,
+            'partition_search_generated_states': len(closed_junctions),
+            'partition_search_expanded_states': junction_expanded,
+            'partition_search_depth_counts': [len(closed_junctions)],
+            'partition_search_template_counts': {}, 'partition_search_template_order': [],
+            'partition_search_strict_probe_succeeded': False,
+        }
     if deadline is None:
         disjoint_deadline = started + 7.0
     else:

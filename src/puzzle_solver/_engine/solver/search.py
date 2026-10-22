@@ -1538,6 +1538,7 @@ def solve_random(
     on_candidate: Callable[[RandomCandidate], bool] | None = None,
     uncertainty_profile: ObservationUncertaintyProfile | None = None,
     progressive_stage: ProgressiveSearchStage | None = None,
+    rigid_backend=None,
 ) -> list[RandomCandidate]:
     """由有向边链对应关系反向解析矩形分割并发布已评估候选。
 
@@ -1571,14 +1572,35 @@ def solve_random(
     generation_deadline = deadline
     if deadline is not None:
         generation_deadline = deadline - 2.0
-    layouts, partition_diagnostics = enumerate_partition_candidates(
-        pieces,
-        tolerance_mm=tolerance_mm,
-        deadline=generation_deadline,
-        maximum_results=result_limit,
-        maximum_merge_options=max(64, min(96, stage.beam_width * 3)),
-        maximum_states_per_depth=(32 if len(pieces) == 4 else 160),
-    )
+    partition_diagnostics = {}
+
+    def iter_layouts():
+        # Validate cheap whole-chain proposals before spending the budget on
+        # partial edges / T junctions. Resume the complete search if rejected.
+        phases = [True, False] if len(pieces) == 4 else [False]
+        expanded = generated = 0
+        elapsed = 0.0
+        for strict in phases:
+            if deadline is not None and perf_counter() >= generation_deadline:
+                break
+            layouts, details = enumerate_partition_candidates(
+                pieces, tolerance_mm=tolerance_mm, deadline=generation_deadline,
+                maximum_results=result_limit,
+                maximum_merge_options=max(64, min(96, stage.beam_width * 3)),
+                maximum_states_per_depth=(32 if len(pieces) == 4 else 160),
+                rigid_backend=rigid_backend,
+                **({'strict_only': strict, '_run_strict_probe': strict} if len(pieces) == 4 else {}),
+            )
+            expanded += details['partition_search_expanded_states']
+            generated += details['partition_search_generated_states']
+            elapsed += details['partition_search_elapsed_seconds']
+            partition_diagnostics.update(details)
+            partition_diagnostics.update(partition_search_expanded_states=expanded,
+                partition_search_generated_states=generated,
+                partition_search_elapsed_seconds=elapsed)
+            yield from layouts
+
+    partition_diagnostics['partition_search_expanded_states'] = 0
     appearance = {
         (
             str(item["piece_a"]),
@@ -1601,7 +1623,7 @@ def solve_random(
     fully_placed = 0
     topology_fit_count = 0
     callback_stopped = False
-    for layout_index, layout in enumerate(layouts):
+    for layout_index, layout in enumerate(iter_layouts()):
         if (
             deadline is not None
             and perf_counter() >= deadline
@@ -1620,7 +1642,13 @@ def solve_random(
         canonical_options = _canonical_candidates(
             indexed_poses, [], appearance
         )
-        canonical_options.sort(key=lambda item: item.total)
+        # Float32 accelerator round-off must not choose the opposite 180-degree
+        # representative of the same rectangle. Tie only below scoring resolution.
+        canonical_options.sort(key=lambda item: (
+            round(item.total, 3),
+            tuple(tuple(np.round(pose.target_vertices_local, 2).ravel())
+                  for pose in sorted(item.poses, key=lambda p: p.piece_id)),
+        ))
         # 四个外接矩形方向中 180° 旋转不产生新的拓扑解释；正式生成只
         # 联合拟合赛题宽高方向最合理的一种，避免同一错误布局耗尽预算。
         for rough_candidate in canonical_options[:1]:
@@ -1694,6 +1722,8 @@ def solve_random(
                     rough_candidate.width,
                     rough_candidate.height,
                     interfaces=interfaces,
+                    dimension_bounds=((90.0, 50.0), (120.0, 90.0))
+                        if config.random_competition_rules else None,
                     max_nfev_override=120,
                 )
                 topology_fit_count += 1
@@ -1813,6 +1843,7 @@ def stream_random_candidates(
     stage_timer: Any | None = None,
     uncertainty_profile: ObservationUncertaintyProfile | None = None,
     progressive_stage: ProgressiveSearchStage | None = None,
+    rigid_backend=None,
 ) -> SearchRunStats:
     """Run deterministic search while publishing admitted candidates eagerly."""
     started = perf_counter()
@@ -1830,6 +1861,7 @@ def stream_random_candidates(
         on_candidate=on_candidate,
         uncertainty_profile=uncertainty_profile,
         progressive_stage=progressive_stage,
+        rigid_backend=rigid_backend,
     )
     if diagnostics is not None:
         diagnostics.update(local_diagnostics)

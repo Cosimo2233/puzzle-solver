@@ -144,6 +144,7 @@ class RuntimeConfig:
     large_seam_gap_warning_mm: float = LARGE_SEAM_GAP_WARNING_MM
     seam_uncertainty_multiplier: float = 2.0
     execution_policy: str = "strict"
+    random_competition_rules: bool = False
 
     def __post_init__(self) -> None:
         if self.execution_profile not in {"debug", "benchmark", "production"}:

@@ -66,9 +66,13 @@ class PlanningOptions:
     search_top_n: int = 100
     start_xy_a4_mm: Point = (10.0, 10.0)
     minimum_execution_confidence: float = 0.6
+    competition_rules: bool = False
 
     def __post_init__(self) -> None:
         """校验模式、搜索规模、噪声上界和拾取头起点。"""
+
+        if type(self.competition_rules) is not bool:
+            raise TypeError('competition_rules 必须为布尔值')
 
         if self.mode not in {"fixed", "random"}:
             raise ValueError("mode 必须为 fixed 或 random")

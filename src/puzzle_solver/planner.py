@@ -5,8 +5,10 @@ from __future__ import annotations
 from collections.abc import Sequence
 import json
 import logging
+import numpy as np
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from puzzle_solver.acceleration import ClearanceScanBackend, RigidFitBackend
 
 from puzzle_solver._engine.geometry import clean_vertices
 from puzzle_solver._engine.solver.preprocess import (
@@ -81,6 +83,9 @@ def _validate_public_input(pieces: tuple[PuzzlePiece, ...]) -> None:
 def plan_sheet_moves(
     pieces: Sequence[PuzzlePiece],
     options: PlanningOptions = PlanningOptions(),
+    *,
+    rigid_backend: RigidFitBackend | None = None,
+    clearance_backend: ClearanceScanBackend | None = None,
 ) -> MovePlan:
     """同步计算纸片拼成矩形所需的完整移动方案。
 
@@ -114,6 +119,15 @@ def plan_sheet_moves(
     # 保留公开接口对输入结构错误的 ValueError 语义；完整求解仍只使用
     # 新引擎，预处理不参与候选搜索或姿态计算。
     _validate_public_input(typed_pieces)
+    if options.mode == 'random' and options.competition_rules:
+        for piece in typed_pieces:
+            vertices = np.asarray(piece.vertices_mm)
+            if not 3 <= len(vertices) <= 5:
+                raise PlanningError(f'{piece.piece_id}: 赛题要求每片 3～5 条边')
+            lengths = np.linalg.norm(np.roll(vertices, -1, axis=0) - vertices, axis=1)
+            # Each measured endpoint may deviate by noise_bound_mm.
+            if lengths.min() + 2 * options.noise_bound_mm < 20.0 - 1e-6:
+                raise PlanningError(f'{piece.piece_id}: 最短边不满足 20 mm（含端点观测误差）')
     preprocess_observations(payload)
     with TemporaryDirectory(prefix="ec_26_e_puzzle_") as temporary:
         root = Path(temporary)
@@ -124,12 +138,15 @@ def plan_sheet_moves(
                 input_path,
                 root / "solution",
                 print_plan=False,
+                rigid_backend=rigid_backend,
+                clearance_backend=clearance_backend,
                 runtime_config={
                     "execution_profile": "production",
                     "top_n": options.search_top_n,
                     # 几何复刻不要求图案唯一，但必须通过几何及机械检查。
                     "execution_policy": "strict",
                     "minimum_execution_confidence": options.minimum_execution_confidence,
+                    "random_competition_rules": options.competition_rules,
                 },
             )
         finally:
@@ -139,6 +156,7 @@ def plan_sheet_moves(
                 logger.removeHandler(handler)
                 handler.close()
 
+    logging.getLogger(__name__).info("SOLVER_PERFORMANCE %s", json.dumps(result.get("performance_profile", {}), sort_keys=True))
     if not result.get("success"):
         raise PlanningError(str(result.get("failure_reason", "未找到完整拼图方案")))
     if not result.get("executable") or not result.get("competition_gate_passed"):

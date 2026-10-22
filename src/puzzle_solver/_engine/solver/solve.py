@@ -10,6 +10,7 @@ from typing import Any
 import numpy as np
 from shapely.geometry import Polygon, box
 from shapely.ops import unary_union
+from puzzle_solver.acceleration import ClearanceScanBackend
 
 from ..appearance.candidate_resolver import resolve_candidates_by_appearance
 from ..appearance.config import (
@@ -216,6 +217,7 @@ def _choose_fixed_candidate(
     data: dict[str, Any],
     config: RuntimeConfig,
     started: float,
+    clearance_backend: ClearanceScanBackend | None = None,
 ) -> tuple[Any, dict[str, Any]]:
     """Try fixed-template alternatives without changing template geometry."""
     width, height = FIXED_WIDTH_MM, FIXED_HEIGHT_MM
@@ -261,6 +263,7 @@ def _choose_fixed_candidate(
             minimum_clearance_mm=config.minimum_clearance_mm,
             maximum_vertex_distance_mm=config.maximum_vertex_distance_mm,
             overlap_tolerance_mm2=config.overlap_numerical_epsilon_mm2,
+            clearance_backend=clearance_backend,
         )
         reasons = []
         if not clearance.feasible:
@@ -322,6 +325,8 @@ def solve_observations(
     runtime_config: RuntimeConfig | dict[str, Any] | str | Path | None = None,
     diagnostics_level: str | None = None,
     surface_mode: str | None = None,
+    rigid_backend=None,
+    clearance_backend: ClearanceScanBackend | None = None,
 ) -> dict:
     """求解器唯一数据入口；不会搜索输入文件所在目录。"""
     started = perf_counter()
@@ -389,6 +394,7 @@ def solve_observations(
         pose_records: list[dict] = []
         candidate_rows: list[dict] = []
         search_diagnostics: dict[str, Any] = {}
+        search_started = perf_counter()
         if mode == "fixed":
             candidates = solve_fixed(
                 pieces,
@@ -400,11 +406,13 @@ def solve_observations(
                         observation_uncertainty.hard_error_radius_mm
                     ),
                 ),
+                **({"rigid_backend": rigid_backend} if rigid_backend is not None else {}),
+                full_diagnostics=config.diagnostics_level == "full",
             )
             if not candidates:
                 return _failure(output_dir, "没有可用的固定模板候选", perf_counter() - started, logger)
             best, fixed_recovery = _choose_fixed_candidate(
-                candidates, pieces, data, config, started
+                candidates, pieces, data, config, started, clearance_backend
             )
             scores = [candidate.total for candidate in candidates]
             width, height = FIXED_WIDTH_MM, FIXED_HEIGHT_MM
@@ -540,6 +548,9 @@ def solve_observations(
                     config,
                 )
         elif mode == "random":
+            if rigid_backend is not None and config.parallel_mode != "off":
+                from dataclasses import replace
+                config = replace(config, parallel_mode="off", worker_count=1)
             recovery_outcome = None
             if config.enable_recovery:
                 recovery_outcome = recover_random_candidate(
@@ -550,6 +561,7 @@ def solve_observations(
                     config,
                     started=started,
                     stage_timer=timer,
+                    rigid_backend=rigid_backend,
                     surface_mode=effective_surface_mode,
                     uncertainty_profile=observation_uncertainty,
                 )
@@ -633,6 +645,7 @@ def solve_observations(
                     diagnostics=search_diagnostics,
                     runtime_config=config,
                     stage_timer=timer,
+                    rigid_backend=rigid_backend,
                     uncertainty_profile=observation_uncertainty,
                 )
             if not candidates:
@@ -770,6 +783,8 @@ def solve_observations(
                         candidate.matches,
                         candidate.interfaces,
                         discovered.get("interfaces", []),
+                        dimension_bounds=((90.0, 50.0), (120.0, 90.0))
+                            if config.random_competition_rules else None,
                     )
                     metrics = exact_geometry_metrics(
                         [record["target"] for record in updated_records],
@@ -979,6 +994,7 @@ def solve_observations(
                 recommended_action="operator_check",
             )
 
+        timer.add("candidate_search_and_pose", perf_counter() - search_started)
         clearance_started = perf_counter()
         measurement_error_radius = float(
             observation_uncertainty.hard_error_radius_mm
@@ -1232,6 +1248,7 @@ def solve_observations(
             and locals().get("recovery_outcome") is not None
             else None
         )
+        final_validation_started = perf_counter()
         gate_evaluator = (
             evaluate_random_execution_gate
             if mode == "random"
@@ -1276,6 +1293,7 @@ def solve_observations(
                 if mode == "random" else {}
             ),
         )
+        timer.add("final_revalidation", perf_counter() - final_validation_started)
         reasons = gate.reasons
         solver_block_reasons = gate.solver_block_reasons
         geometric_block_reasons = [

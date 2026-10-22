@@ -1,6 +1,7 @@
 """题目规定的固定四片模板。"""
 
 from __future__ import annotations
+from functools import lru_cache
 
 from dataclasses import dataclass
 
@@ -83,6 +84,7 @@ def _contour(
     return PhysicalContourTemplate(piece_id, corners, tuple(edges))
 
 
+@lru_cache(maxsize=1)
 def fixed_physical_contours() -> tuple[PhysicalContourTemplate, ...]:
     """Authoritative observable contours; collinear assembly nodes are absent."""
 

@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from itertools import permutations
+import json
+import logging
+from time import perf_counter
 
 import numpy as np
 
@@ -14,7 +17,8 @@ from .fixed_physical_contour import (
     extract_physical_contour_features,
 )
 from .preprocess import ProcessedPiece
-from .robust_pose import compare_pose_estimators
+from .robust_pose import compare_pose_estimators, automatic_vertex_weights
+from ...acceleration import RigidFitBackend, RigidFitRequest
 
 
 @dataclass
@@ -74,10 +78,10 @@ def _best_pose(
     template_id: str,
     template: np.ndarray,
     uncertainty_mm: float = 0.0,
+    *, initial_fits=None, full_diagnostics: bool = True, physical=None, fit_stats=None,
 ) -> PoseCandidate | None:
-    physical = extract_physical_contour_features(
-        observed.vertices, uncertainty_mm
-    )
+    if physical is None:
+        physical = extract_physical_contour_features(observed.vertices, uncertainty_mm)
     if (
         not physical.valid
         or len(physical.structural_corners) != len(template)
@@ -85,12 +89,15 @@ def _best_pose(
     ):
         return None
     best: PoseCandidate | None = None
+    shift_scores: list[float] = []
     for shift in range(len(template)):
         shifted = np.roll(template, -shift, axis=0)
         angle, translation, rms, estimator, diagnostics = compare_pose_estimators(
             physical.structural_corners,
             shifted,
             np.ones(len(physical.structural_corners), dtype=float),
+            full_diagnostics=full_diagnostics,
+            **({"initial_fits": initial_fits[shift]} if initial_fits is not None else {}),
         )
         observed_lengths = np.linalg.norm(
             np.roll(physical.structural_corners, -1, axis=0)
@@ -186,15 +193,27 @@ def _best_pose(
             length_score,
             area_score,
         )
+        shift_scores.append(pose.shape_score)
         if best is None or pose.shape_score < best.shape_score:
             best = pose
+    if initial_fits is not None and len(shift_scores) > 1:
+        ordered = sorted(shift_scores)
+        if ordered[1] - ordered[0] < 0.02:
+            # A near-tied cyclic origin must retain the original CPU tie order.
+            if fit_stats is not None:
+                fit_stats['cpu_tie_fallbacks'] += 1
+            return _best_pose(observed, template_id, template, uncertainty_mm,
+                              full_diagnostics=full_diagnostics, physical=physical)
     return best
 
 
 def solve_fixed(
     pieces: list[ProcessedPiece],
     uncertainty_mm: float = 0.0,
+    *, rigid_backend: RigidFitBackend | None = None, full_diagnostics: bool = True,
 ) -> list[FixedCandidate]:
+    started = perf_counter()
+    fit_stats = dict(cpu_tie_fallbacks=0, fit_requests=0, fit_seconds=0.0)
     templates = fixed_physical_contours()
     if len(pieces) != 4:
         raise ValueError("fixed 模式必须恰好有 4 片")
@@ -202,6 +221,38 @@ def solve_fixed(
     # 同一观测片与模板的位姿不依赖全排列中的其他片。缓存仅属于本次
     # 求解，同时缓存不相容的配对，避免在 24 个排列中重复鲁棒拟合。
     pose_cache: dict[tuple[int, str], PoseCandidate | None] = {}
+    fit_cache = {}
+    physical_cache = [extract_physical_contour_features(p.vertices, uncertainty_mm) for p in pieces]
+    fit_stats['feature_seconds'] = perf_counter() - started
+    if rigid_backend is not None:
+        # Submit all compatible piece/template/cyclic-origin fits as one logical batch.
+        # Iterative robust estimators and geometry/execution checks remain on PS.
+        requests, keys = [], []
+        for index, observed in enumerate(pieces):
+            physical = physical_cache[index]
+            for template_piece in templates:
+                template = np.asarray(template_piece.corner_vertices, dtype=float)
+                if (not physical.valid or physical.polygon_orientation < 0
+                        or len(physical.structural_corners) != len(template)):
+                    continue
+                for shift in range(len(template)):
+                    source = physical.structural_corners
+                    target = np.roll(template, -shift, axis=0)
+                    weights = automatic_vertex_weights(source, target, np.ones(len(source)))
+                    requests.extend((RigidFitRequest(source, target), RigidFitRequest(source, target, weights)))
+                    keys.append((index, template_piece.piece_template_id, shift))
+        fit_started = perf_counter()
+        results = rigid_backend.fit_batch(requests)
+        fit_stats.update(fit_requests=len(requests), fit_seconds=perf_counter()-fit_started)
+        if len(results) != len(requests):
+            raise RuntimeError("刚体后端返回的批次长度不匹配")
+        for result in results:
+            if (np.shape(result.translation) != (2,)
+                    or not np.isfinite([result.angle, *result.translation, result.rms]).all()
+                    or result.rms < 0):
+                raise RuntimeError("刚体后端返回无效结果")
+        for i, (index, template_id, shift) in enumerate(keys):
+            fit_cache.setdefault((index, template_id), {})[shift] = results[2*i:2*i+2]
     for perm in permutations(templates):
         poses: list[PoseCandidate] = []
         valid = True
@@ -213,6 +264,9 @@ def solve_fixed(
                     template_piece.piece_template_id,
                     np.asarray(template_piece.corner_vertices, dtype=float),
                     uncertainty_mm,
+                    physical=physical_cache[index],
+                    **({"full_diagnostics": False} if not full_diagnostics else {}),
+                    **({"initial_fits": fit_cache[key], "fit_stats": fit_stats} if key in fit_cache else {}),
                 )
             pose = pose_cache[key]
             if pose is None:
@@ -229,4 +283,6 @@ def solve_fixed(
                 edge_length / 25.0, vertex,
                 max(p.predicted_max_vertex_error_mm for p in poses),
             ))
+    fit_stats['total_seconds'] = perf_counter() - started
+    logging.getLogger(__name__).info('FIXED_FIT_PERFORMANCE %s', json.dumps(fit_stats))
     return sorted(candidates, key=lambda candidate: candidate.total)[:5]

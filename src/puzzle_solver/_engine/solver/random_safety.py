@@ -711,9 +711,11 @@ def assess_random_assembly(
         arrays, tolerance_mm=topology_tolerance
     )
     relaxation = float(config.geometry_candidate_dimension_relaxation_mm)
+    long_max = 120.0 + relaxation if config.random_competition_rules else RANDOM_TARGET_LONG_SIDE_MAX_MM
+    short_max = 90.0 + relaxation if config.random_competition_rules else RANDOM_TARGET_SHORT_SIDE_MAX_MM
     dimensions_valid = bool(
-        90.0 - relaxation <= width <= RANDOM_TARGET_LONG_SIDE_MAX_MM
-        and 50.0 - relaxation <= height <= RANDOM_TARGET_SHORT_SIDE_MAX_MM
+        90.0 - relaxation <= width <= long_max
+        and 50.0 - relaxation <= height <= short_max
     )
     if not dimensions_valid:
         reasons.append("illegal_target_dimensions")
@@ -736,6 +738,18 @@ def assess_random_assembly(
             for length in topology.per_piece_outer_length_mm.values()
         )
     )
+    if config.random_competition_rules:
+        # A whole original edge must lie on an outer side, not merely touch it.
+        for vertices in arrays.values():
+            points = np.asarray(vertices)
+            has_outer_edge = any(
+                abs(first[axis] - side) <= topology_tolerance
+                and abs(second[axis] - side) <= topology_tolerance
+                and np.linalg.norm(second - first) >= 20.0 - 2 * profile.hard_error_radius_mm
+                for first, second in zip(points, np.roll(points, -1, axis=0))
+                for axis, side in ((0, min_x), (0, max_x), (1, min_y), (1, max_y))
+            )
+            per_piece_outer_valid = per_piece_outer_valid and has_outer_edge
     if not per_piece_outer_valid:
         reasons.append("piece_without_target_outer_edge")
     residual = max(

@@ -9,6 +9,7 @@ from typing import Iterable
 import numpy as np
 from shapely.affinity import translate
 from shapely.geometry import Polygon
+from puzzle_solver.acceleration import ClearanceScanBackend
 
 from ..config import (
     A4_HEIGHT_MM,
@@ -220,6 +221,7 @@ def _plan_clearance_legacy(
     base_correspondence_error_mm: float = 0.0,
     adjacency_pairs: Iterable[tuple[int, int]] | None = None,
     overlap_tolerance_mm2: float = PHYSICAL_OVERLAP_TOLERANCE_MM2,
+    clearance_backend: ClearanceScanBackend | None = None,
 ) -> ClearancePlan:
     """Expand piece centroids about one fixed anchor until buffers are disjoint.
 
@@ -251,16 +253,20 @@ def _plan_clearance_legacy(
     centroids = np.asarray([
         [poly.centroid.x, poly.centroid.y] for poly in polygons
     ])
+    buffered_bounds = np.asarray([poly.buffer(buffer_radius).bounds for poly in polygons])
+    coarse_distances = None
+    if clearance_backend is not None:
+        coarse_distances = clearance_backend.minimum_distances(arrays, centroids)
+        if coarse_distances is not None:
+            coarse_distances = np.asarray(coarse_distances, dtype=float)
+            if (coarse_distances.shape != (401,) or not np.isfinite(coarse_distances).all()
+                    or np.any(coarse_distances < 0)):
+                raise RuntimeError("间隙粗筛后端返回无效结果")
     best: tuple[float, np.ndarray, list[Polygon], float, float, float] | None = None
 
     def inspect(deltas: np.ndarray):
-        planned = _translated(polygons, deltas)
-        clearances = pairwise_clearances(planned)
-        minimum = min(clearances, default=float("inf"))
-        maximum = max(clearances, default=0.0)
-        estimated_overlap = pairwise_positive_overlap_area(planned)
-        buffered = [poly.buffer(buffer_radius) for poly in planned]
-        robust_overlap = pairwise_positive_overlap_area(buffered)
+        # Reject impossible translations before constructing GEOS polygons.
+        # All successful candidates still pass the original exact checks below.
         max_corresponding = max(
             (
                 base_correspondence_error_mm
@@ -269,6 +275,28 @@ def _plan_clearance_legacy(
             ),
             default=float(base_correspondence_error_mm),
         )
+        rejected = (False, None, 0.0, 0.0, 0.0, 0.0, max_corresponding)
+        if max_corresponding > maximum_vertex_distance_mm + 1e-7:
+            return rejected
+        bounds = buffered_bounds + deltas[:, [0, 1, 0, 1]]
+        # A wider guard than the exact 1e-7 check avoids rejecting borderline
+        # cases due to buffer/translation floating-point evaluation order.
+        if (np.any(bounds[:, 0] < -1e-6)
+                or np.any(bounds[:, 2] > A4_WIDTH_MM + 1e-6)
+                or np.any(bounds[:, 1] < DIVIDER_Y_MM - 1e-6)
+                or np.any(bounds[:, 3] > A4_HEIGHT_MM + 1e-6)):
+            return rejected
+        planned = _translated(polygons, deltas)
+        clearances = pairwise_clearances(planned)
+        minimum = min(clearances, default=float("inf"))
+        if minimum + 1e-7 < requested:
+            return rejected
+        maximum = max(clearances, default=0.0)
+        estimated_overlap = pairwise_positive_overlap_area(planned)
+        if estimated_overlap > overlap_tolerance_mm2:
+            return rejected
+        buffered = [poly.buffer(buffer_radius) for poly in planned]
+        robust_overlap = pairwise_positive_overlap_area(buffered)
         feasible = (
             minimum + 1e-7 >= requested
             and estimated_overlap <= overlap_tolerance_mm2
@@ -293,7 +321,10 @@ def _plan_clearance_legacy(
         if max(np.linalg.norm(vector) for vector in vectors) <= 1e-9:
             continue
         previous_alpha = 0.0
-        for alpha in np.linspace(0.0, 1.0, 401):
+        for sample, alpha in enumerate(np.linspace(0.0, 1.0, 401)):
+            if coarse_distances is not None and coarse_distances[sample] + 0.02 < requested:
+                previous_alpha = float(alpha)
+                continue
             deltas = vectors * float(alpha)
             checked = inspect(deltas)
             if checked[0]:
@@ -857,6 +888,7 @@ def plan_clearance(
     typical_uncertainty_mm: float | None = None,
     uncertainty_multiplier: float = 2.0,
     interface_constraints: Iterable[dict] | None = None,
+    clearance_backend: ClearanceScanBackend | None = None,
 ) -> ClearancePlan:
     """Plan translations using either compatibility or production strategy."""
     if strategy == "legacy_centroid_expansion":
@@ -869,6 +901,7 @@ def plan_clearance(
             base_correspondence_error_mm=base_correspondence_error_mm,
             adjacency_pairs=adjacency_pairs,
             overlap_tolerance_mm2=overlap_tolerance_mm2,
+            clearance_backend=clearance_backend,
         )
     if strategy != "interface_local_compaction":
         raise ValueError(f"unknown clearance strategy: {strategy}")

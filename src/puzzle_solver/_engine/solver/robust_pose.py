@@ -134,33 +134,51 @@ def automatic_vertex_weights(
 
 
 def compare_pose_estimators(
-    source: np.ndarray, target: np.ndarray, confidence: np.ndarray | None = None
+    source: np.ndarray, target: np.ndarray, confidence: np.ndarray | None = None,
+    *, initial_fits=None, full_diagnostics: bool = True,
 ) -> tuple[float, np.ndarray, float, str, dict[str, float]]:
+    ordinary = estimate_rigid(source, target) if initial_fits is None else initial_fits[0].pose()
+    ordinary_errors = np.linalg.norm(
+        transform_points(source, ordinary[0], ordinary[1]) - target, axis=1
+    )
+    median_error = max(float(np.median(ordinary_errors)), 1e-9)
+    tail_margin = float(ordinary_errors.max()) - 2.5 * median_error
+    if initial_fits is not None and abs(tail_margin) < 0.01:
+        return compare_pose_estimators(source, target, confidence, full_diagnostics=full_diagnostics)
+    # The existing selection rule always chooses ordinary Kabsch without a
+    # heavy tail. Production need not run four discarded estimators solely to
+    # populate diagnostics; detailed/offline calls retain their complete report.
+    if not full_diagnostics and tail_margin <= 0.0:
+        rms = float(np.sqrt(np.mean(ordinary_errors**2)))
+        return ordinary[0], ordinary[1], rms, "kabsch", {"kabsch": rms}
     weights = automatic_vertex_weights(source, target, confidence)
-    ordinary = estimate_rigid(source, target)
     methods = {
         "kabsch": ordinary,
-        "weighted_kabsch": weighted_kabsch(source, target, weights),
+        "weighted_kabsch": (weighted_kabsch(source, target, weights)
+                            if initial_fits is None else initial_fits[1].pose()),
         "huber_irls": huber_irls_kabsch(source, target, weights),
         "ransac_se2": ransac_se2(source, target),
     }
     methods["soft_l1_edge_joint"] = soft_l1_pose(source, target, methods["huber_irls"], weights)
     diagnostics: dict[str, float] = {}
+    scores: list[float] = []
     best = None
     for name, value in methods.items():
         angle, translation, _ = value
         errors = np.linalg.norm(transform_points(source, angle, translation) - target, axis=1)
         score = float(np.median(errors) + 0.35 * np.sqrt(np.average(errors**2, weights=weights)))
         diagnostics[name] = float(np.sqrt(np.mean(errors**2)))
+        scores.append(score)
         if best is None or score < best[0]:
             best = (score, angle, translation, diagnostics[name], name)
     assert best is not None
-    ordinary_errors = np.linalg.norm(
-        transform_points(source, ordinary[0], ordinary[1]) - target, axis=1
-    )
     # 无明显离群点时，普通 Kabsch 是独立同分布顶点噪声下的最小方差估计；
     # 只有残差呈明显重尾时才切换到鲁棒估计。
-    median_error = max(float(np.median(ordinary_errors)), 1e-9)
-    if float(ordinary_errors.max()) <= 2.5 * median_error:
+    if initial_fits is not None:
+        # Float32 noise must not decide a near tie or change the heavy-tail branch.
+        ordered = sorted(scores)
+        if tail_margin > 0.0 and ordered[1] - ordered[0] < 0.01:
+            return compare_pose_estimators(source, target, confidence, full_diagnostics=full_diagnostics)
+    if tail_margin <= 0.0:
         return ordinary[0], ordinary[1], diagnostics["kabsch"], "kabsch", diagnostics
     return best[1], best[2], best[3], best[4], diagnostics

@@ -7,7 +7,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from itertools import combinations
+from itertools import combinations, islice
+from functools import cached_property, lru_cache
+from puzzle_solver.acceleration import RigidFitRequest, fit_search_batch, search_acceleration
 from math import atan2, degrees
 from time import perf_counter
 from typing import Any, Callable
@@ -66,11 +68,50 @@ class PartitionComponent:
     evidence: tuple[EdgeChainEvidence, ...]
     cost: float
 
-    @property
+    @cached_property
     def members(self) -> tuple[str, ...]:
         """返回排序后的叶片编号。"""
 
         return tuple(sorted(self.poses))
+
+    @cached_property
+    def partial_rank(self) -> tuple[float, float]:
+        hull = self.shape.convex_hull
+        short, long = _minimum_rectangle_sides(hull)
+        area = float(self.shape.area)
+        return (1.0 - area / max(float(hull.area), 1e-9),
+                1.0 - area / max(short * long, 1e-9))
+
+    @cached_property
+    def rectangle_rank(self) -> tuple[float, ...]:
+        physical_union = unary_union([Polygon(pose[2]) for pose in self.poses.values()])
+        short, long = _minimum_rectangle_sides(physical_union.convex_hull)
+        violation = (max(0., 90.-long) + max(0., long-120.)
+                     + max(0., 50.-short) + max(0., short-90.))
+        # The bounding rectangle contains the entire physical union by
+        # construction, so IoU is exactly union area / rectangle area.
+        return violation, 1.0-float(physical_union.area)/max(short*long,1e-9), self.cost
+
+
+def _minimum_rectangle_sides(hull) -> tuple[float, float]:
+    """Float64 edge projections for tiny convex hulls (GEOS-version independent).
+
+    A minimum-area bounding rectangle has a side parallel to a convex-hull
+    edge. Evaluate all such orientations together; no sampling/angle rounding.
+    This only ranks search proposals; final geometric gates remain unchanged.
+    """
+    points = np.asarray(hull.exterior.coords[:-1], dtype=np.float64)
+    points = points - points[0]
+    edges = np.roll(points, -1, axis=0) - points
+    lengths = np.linalg.norm(edges, axis=1)
+    axes = edges[lengths > 1e-12] / lengths[lengths > 1e-12, None]
+    if not len(axes):
+        raise ValueError('退化凸包不能构造矩形')
+    normals = np.column_stack((-axes[:, 1], axes[:, 0]))
+    widths = np.ptp(points @ axes.T, axis=0)
+    heights = np.ptp(points @ normals.T, axis=0)
+    index = int(np.argmin(widths * heights))
+    return tuple(sorted((float(widths[index]), float(heights[index]))))
 
 
 @dataclass(frozen=True)
@@ -119,6 +160,9 @@ def _component_chains(
     原始边绝不能因此丢失。重复几何在这里去重，不影响其离散解释。
     """
 
+    cache = component.__dict__.setdefault("_chain_cache", {})
+    if preserve_leaf_edges in cache:
+        return cache[preserve_leaf_edges]
     chains = _chains(_boundary_vertices(component.shape))
     if preserve_leaf_edges:
         for _piece_id, (_angle, _translation, vertices) in component.poses.items():
@@ -137,6 +181,7 @@ def _component_chains(
         if signature not in signatures:
             signatures.add(signature)
             unique.append(chain)
+    cache[preserve_leaf_edges] = unique
     return unique
 
 
@@ -181,8 +226,8 @@ def _endpoint_sourced_variants(
     result = [(first, second)]
     if len(first) != 2 or len(second) != 2:
         return result
-    first_length = float(LineString(first).length)
-    second_length = float(LineString(second).length)
+    first_length = _line_features(first)[1]
+    second_length = _line_features(second)[1]
     difference = abs(first_length - second_length)
     if difference <= max(tolerance_mm * 1.8, 0.07 * max(first_length, second_length)):
         return result
@@ -191,21 +236,21 @@ def _endpoint_sourced_variants(
     if short_length / max(long_length, 1e-9) < 0.18:
         return result
     if first_length > second_length:
-        line = LineString(first)
+        delta = (first[1] - first[0]) * (short_length / long_length)
         result.extend((
-            (np.asarray(substring(line, 0.0, short_length).coords), second),
+            (np.asarray((first[0], first[0] + delta)), second),
             (
-                np.asarray(substring(line, long_length - short_length, long_length).coords),
+                np.asarray((first[1] - delta, first[1])),
                 second,
             ),
         ))
     else:
-        line = LineString(second)
+        delta = (second[1] - second[0]) * (short_length / long_length)
         result.extend((
-            (first, np.asarray(substring(line, 0.0, short_length).coords)),
+            (first, np.asarray((second[0], second[0] + delta))),
             (
                 first,
-                np.asarray(substring(line, long_length - short_length, long_length).coords),
+                np.asarray((second[1] - delta, second[1])),
             ),
         ))
     return result
@@ -259,20 +304,19 @@ def _repair_union(first: Polygon, second: Polygon, tolerance_mm: float) -> Polyg
     return repaired
 
 
-def _merge_options(
-    left: PartitionComponent,
-    right: PartitionComponent,
-    tolerance_mm: float,
-    maximum_options: int,
-    *,
-    allow_endpoint_partials: bool,
-    preserve_leaf_edges: bool,
-    deadline: float | None = None,
-) -> list[PartitionComponent]:
-    """按反向边链对应关系生成两个子装配的有限合并选项。"""
+@lru_cache(maxsize=4096)
+def _cached_line_features(coordinates: bytes):
+    chain = np.frombuffer(coordinates, dtype=np.float64).reshape(-1, 2)
+    line = LineString(chain)
+    return line, float(line.length), float(np.linalg.norm(chain[-1] - chain[0]))
 
-    options: list[PartitionComponent] = []
-    signatures: set[tuple[Any, ...]] = set()
+
+def _line_features(chain):
+    return _cached_line_features(np.asarray(chain, dtype=np.float64).tobytes())
+
+
+def _chain_candidates(left, right, tolerance_mm, allow_endpoint_partials, preserve_leaf_edges, deadline):
+    """Cheap length/chord pruning precedes batched rigid fits."""
     for raw_left_chain in _component_chains(left, preserve_leaf_edges):
         if deadline is not None and perf_counter() >= deadline:
             break
@@ -289,22 +333,49 @@ def _merge_options(
           for left_chain, right_chain in variants:
             if deadline is not None and perf_counter() >= deadline:
                 break
-            left_line = LineString(left_chain)
-            left_length = float(left_line.length)
-            left_chord = float(np.linalg.norm(left_chain[-1] - left_chain[0]))
-            right_line = LineString(right_chain)
-            right_length = float(right_line.length)
+            left_line, left_length, left_chord = _line_features(left_chain)
+            right_line, right_length, right_chord = _line_features(right_chain)
             length_error = abs(left_length - right_length)
             length_limit = max(tolerance_mm * 1.8, 0.07 * max(left_length, right_length))
             if length_error > length_limit:
                 continue
-            right_chord = float(np.linalg.norm(right_chain[-1] - right_chain[0]))
             if abs(left_chord - right_chord) > length_limit:
                 continue
-            angle, translation, endpoint_rms = estimate_rigid(
-                np.asarray((right_chain[0], right_chain[-1])),
-                np.asarray((left_chain[-1], left_chain[0])),
-            )
+            yield (raw_left_chain, raw_right_chain, left_chain, right_chain, left_line, left_length, right_length, length_error)
+
+
+def _fitted_chain_candidates(left, right, tolerance_mm, allow_endpoint_partials, preserve_leaf_edges, deadline):
+    candidates = iter(_chain_candidates(left, right, tolerance_mm, allow_endpoint_partials, preserve_leaf_edges, deadline))
+    while True:
+        batch = list(islice(candidates, 64))
+        if not batch:
+            return
+        requests = [RigidFitRequest(np.asarray((row[3][0], row[3][-1])),
+                                    np.asarray((row[2][-1], row[2][0]))) for row in batch]
+        for row, result in zip(batch, fit_search_batch(requests)):
+            yield row, result.pose()
+
+
+def _merge_options(
+    left: PartitionComponent,
+    right: PartitionComponent,
+    tolerance_mm: float,
+    maximum_options: int,
+    *,
+    allow_endpoint_partials: bool,
+    preserve_leaf_edges: bool,
+    deadline: float | None = None,
+) -> list[PartitionComponent]:
+    """按反向边链对应关系生成两个子装配的有限合并选项。"""
+
+    options: list[PartitionComponent] = []
+    signatures: set[tuple[Any, ...]] = set()
+    for row, pose in _fitted_chain_candidates(left, right, tolerance_mm, allow_endpoint_partials, preserve_leaf_edges, deadline):
+            if deadline is not None and perf_counter() >= deadline:
+                break
+            (raw_left_chain, raw_right_chain, left_chain, right_chain,
+             left_line, left_length, right_length, length_error) = row
+            angle, translation, endpoint_rms = pose
             aligned_right = transform_points(right_chain, angle, translation)[::-1]
             polyline_residual = float(
                 max(
@@ -377,8 +448,8 @@ def _merge_options(
                 + 0.04 * turn_residual
                 + 0.2 * overlap
                 + 0.05 * (
-                    float(LineString(raw_left_chain).length) - left_length
-                    + float(LineString(raw_right_chain).length) - right_length
+                    _line_features(raw_left_chain)[1] - left_length
+                    + _line_features(raw_right_chain)[1] - right_length
                 )
             )
             options.append(
@@ -471,28 +542,7 @@ def _prune_frontier_with_partition_diversity(
 def _rectangle_rank(component: PartitionComponent) -> tuple[float, ...]:
     """用旋转不变的赛题矩形约束排序完整解析，不负责安全准入。"""
 
-    physical_union = unary_union([
-        Polygon(pose[2]) for pose in component.poses.values()
-    ])
-    rectangle = physical_union.minimum_rotated_rectangle
-    coordinates = np.asarray(rectangle.exterior.coords[:-1], dtype=float)
-    sides = sorted(
-        float(np.linalg.norm(coordinates[(index + 1) % 4] - coordinates[index]))
-        for index in range(4)
-    )
-    short_side = float(np.mean(sides[:2]))
-    long_side = float(np.mean(sides[2:]))
-    dimension_violation = (
-        max(0.0, 90.0 - long_side)
-        + max(0.0, long_side - 120.0)
-        + max(0.0, 50.0 - short_side)
-        + max(0.0, short_side - 90.0)
-    )
-    iou = float(
-        physical_union.intersection(rectangle).area
-        / max(physical_union.union(rectangle).area, 1e-9)
-    )
-    return dimension_violation, 1.0 - iou, component.cost
+    return component.rectangle_rank
 
 
 def _state_rank(state: list[PartitionComponent]) -> tuple[float, ...]:
@@ -500,21 +550,11 @@ def _state_rank(state: list[PartitionComponent]) -> tuple[float, ...]:
 
     if len(state) == 1:
         return _rectangle_rank(state[0])
-    compactness = sum(
-        1.0 - float(
-            component.shape.area
-            / max(component.shape.convex_hull.area, 1e-9)
-        )
-        for component in state
-    )
-    rectangle_sprawl = sum(
-        1.0 - float(
-            component.shape.area
-            / max(component.shape.minimum_rotated_rectangle.area, 1e-9)
-        )
-        for component in state
-    )
-    return compactness, rectangle_sprawl, sum(item.cost for item in state)
+    compactness = sum(component.partial_rank[0] for component in state)
+    rectangle_sprawl = sum(component.partial_rank[1] for component in state)
+    # Equivalent convex states can differ by signed float32 round-off. Use the
+    # same ordering resolution as the four-piece topology search, never gates.
+    return round(compactness, 6), round(rectangle_sprawl, 6), round(sum(item.cost for item in state), 3)
 
 
 def _enumerate_recursive_partition_candidates(
@@ -726,17 +766,19 @@ def enumerate_three_piece_candidates(
 
 def enumerate_partition_candidates(
     pieces: list[ProcessedPiece],
+    *, rigid_backend=None,
     **kwargs: Any,
 ) -> tuple[list[PartitionSearchResult], dict[str, Any]]:
     """按碎片数量分派互不共享搜索预算的 2/3/4 片解析器。"""
 
-    count = len(pieces)
-    if count == 2:
-        return enumerate_two_piece_candidates(pieces, **kwargs)
-    if count == 3:
-        return enumerate_three_piece_candidates(pieces, **kwargs)
-    if count == 4:
-        from .four_piece_topology import enumerate_four_piece_candidates
+    with search_acceleration(rigid_backend):
+        count = len(pieces)
+        if count == 2:
+            return enumerate_two_piece_candidates(pieces, **kwargs)
+        if count == 3:
+            return enumerate_three_piece_candidates(pieces, **kwargs)
+        if count == 4:
+            from .four_piece_topology import enumerate_four_piece_candidates
 
-        return enumerate_four_piece_candidates(pieces, **kwargs)
-    raise ValueError("随机拼图只支持 2～4 片")
+            return enumerate_four_piece_candidates(pieces, **kwargs)
+        raise ValueError("随机拼图只支持 2～4 片")
