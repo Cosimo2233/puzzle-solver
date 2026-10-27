@@ -11,7 +11,7 @@ A4_WIDTH_MM = 207.0
 A4_HEIGHT_MM = 292.0
 Point = tuple[float, float]
 Vertices = tuple[Point, ...]
-PuzzleMode = Literal["fixed", "random"]
+PuzzleMode = Literal["fixed", "random", "tangram"]
 
 
 def _validate_point(name: str, point: Point) -> None:

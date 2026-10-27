@@ -45,3 +45,8 @@ poetry run pytest tests/test_validation_metrics.py -q
 ```
 
 测试四个历史基线及二十个固定种子新样例，包括固定四片、随机二至四片，以及模板、递归切分、线排列、混合和对抗生成模式。每例保存输入、方案、指标、日志和图像；生成真值不传入求解器。输出方案通过检查与紧密拼成矩形分别统计，不能互相替代。
+## 七巧板公共接口
+
+`get_tangram_layout(pattern_id, side_mm=100)` 提供 square、cat、rabbit、fish、boat、house 六个精确标准布局。`plan_tangram_moves(pieces, TangramPlanningOptions(...))` 接受恰好七片毫米轮廓，返回 `MovePlan(mode="tangram")`；`classify_tangram_piece` 可独立进行片型校验。
+
+规划保留实测片形和尺度，只使用平移与旋转；平行四边形朝向不符时可镜像整个目标图案。位置优化保持实测片间装配间隙，七点动态规划选择取放路线。默认源区、目标区可通过选项覆盖；不支持占位中转或单片翻面。原 `plan_sheet_moves` 和 `PlanningOptions` 继续仅处理 fixed/random。

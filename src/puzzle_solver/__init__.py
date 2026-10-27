@@ -8,6 +8,10 @@ from puzzle_solver.contracts import (
     PuzzlePiece,
 )
 from puzzle_solver.planner import plan_sheet_moves
+from puzzle_solver.tangram import (
+    PATTERN_NAMES, TangramLayout, TangramPlanningOptions,
+    get_tangram_layout, classify_tangram_piece, plan_tangram_moves,
+)
 
 __all__ = [
     "MovePlan",
@@ -16,4 +20,6 @@ __all__ = [
     "PlanningOptions",
     "PuzzlePiece",
     "plan_sheet_moves",
+    "PATTERN_NAMES", "TangramLayout", "TangramPlanningOptions",
+    "get_tangram_layout", "classify_tangram_piece", "plan_tangram_moves",
 ]
