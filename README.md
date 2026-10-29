@@ -49,6 +49,8 @@ poetry run pytest tests/test_validation_metrics.py -q
 
 `get_tangram_layout(pattern_id, side_mm=100)` 提供十二个精确标准布局：square、cat、rabbit、fish、boat、house、dog、swan、bird、penguin、seal、chair。显示名以公共只读映射 `PATTERN_NAMES` 为准。`plan_tangram_moves(pieces, TangramPlanningOptions(...))` 接受恰好七片毫米轮廓，返回 `MovePlan(mode="tangram")`；`classify_tangram_piece` 可独立进行片型校验。
 
-规划保留实测片形和尺度，只使用平移与旋转；平行四边形朝向不符时可镜像整个目标图案。先枚举每 45° 的整体朝向，全部无解后再细化到 15°；位置优化直接约束分离轴和工作区，以最小平移留出装配间隙，不再统一拉开质心以免细长图案无谓超限。七点动态规划选择取放路线。默认源区、目标区可通过选项覆盖；不支持占位中转或单片翻面。原 `plan_sheet_moves` 和 `PlanningOptions` 继续仅处理 fixed/random。
+规划保留实测片形和尺度，只使用平移与旋转；平行四边形朝向不符时可镜像整个目标图案。先枚举每 45° 的整体朝向，全部无解后依次细化到 15°、5°；位置优化直接约束分离轴和工作区，以最小平移留出装配间隙，不再统一拉开质心以免细长图案无谓超限。七点动态规划选择取放路线。默认源区、目标区可通过选项覆盖；不支持占位中转或单片翻面。原 `plan_sheet_moves` 和 `PlanningOptions` 继续仅处理 fixed/random。
 
 七巧板回归：`poetry run pytest tests/test_tangram.py -q`（63 项），覆盖十二图案的面积、标准片型、内部无重叠、刚体方案、任意角度分类、同形片身份重排、镜像限制及保存实拍轮廓的 1 mm 装配间隙。该测试不代表实际机械精度验收。
+
+名称与逐片拼法另由 `tests/test_tangram_reference_layouts.py` 对照独立采样的参考图顶点检查；与上述测试合并运行共 75 项。参考比较只允许整套图案统一显示缩放和平移，不能自由调整单片位置来通过测试。标准布局的猫、兔、鱼、船、房子、鸟、海豹已按参考图更正，船采用用户明确指定的紫色帆船版本。图像采样误差门槛与实物运动精度分开处理。
