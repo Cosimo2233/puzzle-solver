@@ -58,19 +58,42 @@ def test_missing_duplicate_touching_wrong_size_and_occupied_target_rejected():
         classify_tangram_piece(((0,0),(40,0),(0,40)))
 
 
-def test_reflected_parallelogram_requires_mirrored_pattern():
+@pytest.mark.parametrize('name', PATTERN_NAMES)
+def test_reflected_parallelogram_requires_mirrored_pattern(name):
     pieces=list(scattered())
-    original=plan_tangram_moves(pieces)
+    options=TangramPlanningOptions(pattern_id=name)
+    original=plan_tangram_moves(pieces,options)
     p=np.array(pieces[-1].vertices_mm)
     p[:,0]=171-p[:,0]
     pieces[-1]=PuzzlePiece('6',tuple(map(tuple,p)))
     # Both possible source chiralities remain within the same source bounding box.
-    plan=plan_tangram_moves(pieces)
+    plan=plan_tangram_moves(pieces,options)
     assert plan.moves[0].template_id != original.moves[0].template_id
     if plan.moves[0].template_id.endswith(':normal'):
         pieces=list(scattered())
     with pytest.raises(PlanningError):
-        plan_tangram_moves(pieces,TangramPlanningOptions(allow_mirrored_pattern=False))
+        plan_tangram_moves(pieces,replace(options,allow_mirrored_pattern=False))
+
+
+@pytest.mark.parametrize('name', PATTERN_NAMES)
+def test_piece_classification_handles_arbitrary_rotations_and_permutations(name):
+    for i, p in enumerate(get_tangram_layout(name).pieces):
+        angle=math.radians(13.7+37.1*i)
+        rotation=np.array([[math.cos(angle),math.sin(angle)],[-math.sin(angle),math.cos(angle)]])
+        vertices=np.array(p)@rotation+[83.,-42.]
+        for reordered in (np.roll(vertices,1,axis=0),vertices[::-1]):
+            assert classify_tangram_piece(reordered)==['large','large','small','small','medium','square','parallel'][i]
+
+
+def test_interchangeable_triangles_do_not_depend_on_input_order_or_ids():
+    pieces=scattered()
+    original=plan_tangram_moves(pieces,TangramPlanningOptions(pattern_id='bird'))
+    shuffled=tuple(PuzzlePiece('new-'+str(i),pieces[j].vertices_mm)
+                   for i,j in enumerate((3,1,6,4,0,5,2)))
+    plan=plan_tangram_moves(shuffled,TangramPlanningOptions(pattern_id='bird'))
+    # 输入身份变化仍得到同样的最短取放路线与刚体落点。
+    assert np.allclose([m.pick_xy_a4_mm for m in original.moves],[m.pick_xy_a4_mm for m in plan.moves])
+    assert np.allclose([m.place_xy_a4_mm for m in original.moves],[m.place_xy_a4_mm for m in plan.moves])
 
 
 def test_tiny_target_never_scales_pieces():

@@ -15,7 +15,9 @@ from scipy.optimize import Bounds, LinearConstraint, minimize
 from .contracts import MovePlan, PlannedMove, PlanningError, PuzzlePiece
 
 S = math.sqrt(2)
-PATTERN_NAMES = MappingProxyType(dict(square='正方形', cat='猫', rabbit='兔', fish='鱼', boat='船', house='房子'))
+PATTERN_NAMES = MappingProxyType(dict(
+    square='正方形', cat='猫', rabbit='兔', fish='鱼', boat='船', house='房子',
+    dog='狗', swan='天鹅', bird='鸟', penguin='企鹅', seal='海豹', chair='椅子'))
 # 精确顶点以整套正方形边长的 1/4 为单位。每行依次为两大、两小、中、方、平行。
 _LAYOUTS = {
  'square': (
@@ -48,6 +50,40 @@ _LAYOUTS = {
   ((S,S),(0,2*S),(0,S)), ((2*S,S),(S,0),(2*S,0)),
   ((S,S),(2*S,2*S),(0,2*S)), ((0,0),(0,S),(S,S),(S,0)),
   ((S,0),(2*S,S),(2*S,2*S),(S,S))),
+ # 参考图中的轮廓按标准片的边长重建；不从截图像素直接生成运动坐标。
+ 'dog': (
+  ((0,0),(0,-2*S),(2*S,0)), ((2*S-2,-2),(2*S+2,-2),(2*S,0)),
+  ((0,-S/2),(0,2-S/2),(-1,1-S/2)), ((2*S+1,-3),(2*S+3,-3),(2*S+2,-4)),
+  ((2*S,0),(2*S+2,-2),(2*S+2,0)),
+  ((2*S+2,-2),(2*S+3,-3),(2*S+4,-2),(2*S+3,-1)),
+  ((2*S+2-S,0),(2*S+2,0),(2*S+2+S,S),(2*S+2,S))),
+ 'swan': (
+  ((0,0),(0,-4),(-2,-2)), ((0,0),(0,-4),(2,-2)),
+  ((-3-S,-5+S),(-3-S,-3+S),(-2-S,-4+S)), ((1,-3),(3,-3),(2,-2)),
+  ((-2,-2),(-2+S,-2+S),(-2-S,-2+S)),
+  ((-3-S,-5+S),(-2-S,-6+S),(-1-S,-5+S),(-2-S,-4+S)),
+  ((-2-S,-2+S),(-1-S,-3+S),(-1-S,-5+S),(-2-S,-4+S))),
+ 'bird': (
+  ((0,0),(0,2*S),(-2*S,2*S)), ((0,0),(2*S,0),(2*S,-2*S)),
+  ((-2,-S),(-2+S,-S),(-2,0)), ((0,0),(S,0),(S,S)),
+  ((S,0),(S,2),(S+2,2)), ((0,0),(-1,-1),(-2,0),(-1,1)),
+  ((0,0),(S,S),(S,2*S),(0,S))),
+ 'penguin': (
+  ((S,S),(S,S+4),(S-2,S+2)), ((S-2,S+2),(S,S+4),(S-2,S+6)),
+  ((S,0),(2*S,0),(S,S)), ((S-2,S+6),(S,S+6),(S-1,S+5)),
+  ((-2*S,2*S),(0,2*S),(-S,3*S)), ((0,0),(S,0),(S,S),(0,S)),
+  ((0,S),(S,S),(0,2*S),(-S,2*S))),
+ 'seal': (
+  ((0,0),(0,-2*S),(2*S,0)), ((2*S-2,-2),(2*S+2,-2),(2*S,0)),
+  ((0,0),(S,0),(S,S)), ((-S,0),(0,0),(0,-S)),
+  ((2*S,0),(2*S+2,0),(2*S+2,-2)),
+  ((0,-2*S),(-1,-2*S-1),(0,-2*S-2),(1,-2*S-1)),
+  ((2*S+2,-2),(2*S+3,-1),(2*S+3,1),(2*S+2,0))),
+ 'chair': (
+  ((0,0),(2*S,0),(2*S,-2*S)), ((-S,S),(-S,-S),(S,-S)),
+  ((-S,S),(0,0),(0,S)), ((S,-4*S),(2*S,-4*S),(2*S,-3*S)),
+  ((S,-4*S),(S,-2*S),(2*S,-3*S)), ((S,0),(2*S,0),(2*S,S),(S,S)),
+  ((S,-2*S),(2*S,-3*S),(2*S,-2*S),(S,-S))),
 }
 KINDS = ('large', 'large', 'small', 'small', 'medium', 'square', 'parallel')
 
@@ -149,32 +185,25 @@ def classify_tangram_piece(vertices_mm, side_mm=100., tolerance_mm=1.5):
     return kind
 
 
-def _target_variants(options):
+def _target_variants(options, angles=range(0,360,45)):
     layout = get_tangram_layout(options.pattern_id, options.side_mm)
     region = box(*options.target_bounds_mm)
     center = np.array(region.centroid.coords[0])
     for mirrored in ((False,True) if options.allow_mirrored_pattern else (False,)):
         raw = [np.array(p)*[-1 if mirrored else 1,1] for p in layout.pieces]
-        # 仅平移碎片中心以留出装配缝；绝不缩放碎片。
-        centroids = [np.array(Polygon(p).centroid.coords[0]) for p in raw]
-        expansion = 1.
-        for _ in range(100):
-            spread = [p+c*(expansion-1) for p,c in zip(raw,centroids)]
-            polygons = [Polygon(p) for p in spread]
-            if all(a.distance(b) >= options.assembly_gap_mm-1e-8 for i,a in enumerate(polygons) for b in polygons[i+1:]):
-                break
-            expansion += .005
-        else:
-            raise PlanningError('无法生成带装配间隙的图案')
-        for degrees in range(0,360,45):
+        for degrees in angles:
             a = math.radians(degrees)
             r = np.array([[math.cos(a),math.sin(a)],[-math.sin(a),math.cos(a)]])
-            rotated = [p @ r for p in spread]
+            rotated = [p @ r for p in raw]
             allpoints = np.concatenate(rotated)
             offset = center-(allpoints.min(axis=0)+allpoints.max(axis=0))/2
             targets = [_vertices(p+offset) for p in rotated]
-            if all(region.covers(Polygon(p)) for p in targets):
-                yield mirrored, targets
+            # 直接约束片间分离轴和工作区，最小化每片平移；避免均匀拉开
+            # 质心导致细长图案被不必要地扩张。片形和尺度始终不变。
+            choices = [(i,0.,np.eye(2),np.zeros(2),p) for i,p in enumerate(targets)]
+            separated = _separate_actual_targets(choices,targets,options)
+            if separated is not None:
+                yield mirrored, [c[4] for c in separated]
 
 
 def _shortest_order(pick_xy, place_xy, start):
@@ -266,7 +295,13 @@ def plan_tangram_moves(pieces, options=TangramPlanningOptions()):
     assignments = list(product(*(list(permutations([i for i,k in enumerate(kinds) if k == kind]))
                                  for kind in ('large','small','medium','square','parallel'))))
     best = None
-    for mirrored, targets in _target_variants(options):
+    def target_variants():
+        # 常规 45° 朝向先覆盖全部镜像和同形片分配；仅在无解时细化。
+        # 保持窄工作区的可解性，避免常规任务在 PS 上多算三倍位姿。
+        yield from _target_variants(options)
+        if best is None:
+            yield from _target_variants(options, tuple(a for a in range(0,360,15) if a % 45))
+    for mirrored, targets in target_variants():
         for groups in assignments:
             mapping = tuple(i for group in groups for i in group)
             choices = []
